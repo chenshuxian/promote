@@ -13,7 +13,6 @@ const useStyles = makeStyles({
 
 const Footer = () => {
   const classes = useStyles();
-  const year = new Date().getFullYear();
   return (
     <Grid
       className={classes.root}
@@ -21,7 +20,11 @@ const Footer = () => {
       justifyContent="center"
       alignItems="center"
     >
-      <Typography>© {year} 金門縣民政處 </Typography>
+      <Typography variant="body2" color="textSecondary" align="center">
+        {"Copyright © "}
+        金門縣民政處 {new Date().getFullYear()}
+        {"."}
+      </Typography>
     </Grid>
   );
 };

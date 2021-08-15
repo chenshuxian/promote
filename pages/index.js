@@ -9,6 +9,7 @@ import ImageSearchIcon from "@material-ui/icons/ImageSearch";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import TModal from "./components/modal.js";
 
 import {
   Typography,
@@ -46,27 +47,6 @@ const formFields = [
         placeholder="格式:0890813"
         variant="outlined"
       />
-    ),
-  },
-  {
-    size: 6,
-    field: (
-      <TextField
-        label="戶號"
-        name="house_id"
-        margin="none"
-        required={true}
-        placeholder="格式:0890813"
-        variant="outlined"
-      />
-    ),
-  },
-  {
-    size: 6,
-    field: (
-      <IconButton color="primary" aria-label="upload picture" component="span">
-        <ImageSearchIcon style={{ fontSize: 30 }} />
-      </IconButton>
     ),
   },
   {
@@ -156,6 +136,7 @@ const checkSubmit = async (values) => {
 
 export default function Home() {
   const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
   const [checked, setChecked] = React.useState("none");
   // yes, this can even be async
 
@@ -170,6 +151,14 @@ export default function Home() {
     if (event.target.checked) setChecked("block");
     else setChecked("none");
   }
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <Grid container spacing={8}>
@@ -194,9 +183,6 @@ export default function Home() {
           </Grid>
           <Grid id="apply" item xs={12}>
             <Grid container spacing={4}>
-              <Grid item xs={12}>
-                <Typography variant="h4">補助申請區</Typography>
-              </Grid>
               <Grid item xs={12}>
                 <Grid
                   container
@@ -243,7 +229,7 @@ export default function Home() {
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} md={5}>
+                  <Grid item xs={12} md={6}>
                     <Form
                       onSubmit={onSubmit}
                       checked={checked}
@@ -268,6 +254,26 @@ export default function Home() {
                                   onClick={handleCheckBox}
                                 />
                               </Grid>
+                              <Grid item xs={6}>
+                                <TextField
+                                  label="戶號"
+                                  name="house_id"
+                                  margin="none"
+                                  required={true}
+                                  placeholder="格式:0890813"
+                                  variant="outlined"
+                                />
+                              </Grid>
+                              <Grid item xs={6}>
+                                <IconButton
+                                  color="primary"
+                                  aria-label="upload picture"
+                                  component="span"
+                                  onClick={handleOpen}
+                                >
+                                  <ImageSearchIcon style={{ fontSize: 30 }} />
+                                </IconButton>
+                              </Grid>
                               <Grid item xs={12}>
                                 <TextField
                                   label="監護人身份證"
@@ -291,7 +297,7 @@ export default function Home() {
                                   onClick={form.reset}
                                   disabled={submitting || pristine}
                                 >
-                                  Reset
+                                  清除
                                 </Button>
                               </Grid>
                               <Grid item style={{ marginTop: 16 }}>
@@ -301,7 +307,7 @@ export default function Home() {
                                   type="submit"
                                   disabled={submitting}
                                 >
-                                  Submit
+                                  送出
                                 </Button>
                               </Grid>
                             </Grid>
@@ -350,7 +356,7 @@ export default function Home() {
                                 onClick={form.reset}
                                 disabled={submitting || pristine}
                               >
-                                Reset
+                                清除
                               </Button>
                             </Grid>
                             <Grid item style={{ marginTop: 16 }}>
@@ -370,7 +376,7 @@ export default function Home() {
                     )}
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={false} md={6}>
                   <Grid
                     container
                     direction="column"
@@ -378,7 +384,7 @@ export default function Home() {
                     alignItems="center"
                     spacing={2}
                   >
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={false} md={6}>
                       <Typography variant="h6">
                         請於查詢欄位中輸入查詢資訊
                       </Typography>
@@ -391,6 +397,7 @@ export default function Home() {
         </Grid>
       </Grid>
       <Footer />
+      <TModal handleClose={handleClose} open={open} />
     </Grid>
   );
 }
