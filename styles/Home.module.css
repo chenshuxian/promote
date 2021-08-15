@@ -1,11 +1,11 @@
 .container {
-  min-height: 100vh;
+  min-height: 0%;
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 0%;
 }
 
 .main {
@@ -16,6 +16,7 @@
   justify-content: center;
   align-items: center;
 }
+
 
 .footer {
   width: 100%;
@@ -44,6 +45,10 @@
   text-decoration: underline;
 }
 
+.info {
+  width: 50%;
+}
+
 .title {
   margin: 0;
   line-height: 1.15;
@@ -58,7 +63,14 @@
 .description {
   line-height: 1.5;
   font-size: 1.5rem;
+  text-align: left;
 }
+
+.indent {
+  text-indent: -1.5em;
+  margin-left: 2.5em;
+}
+
 
 .code {
   background: #fafafa;
@@ -74,7 +86,7 @@
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  max-width: 800px;
+  min-width: 50%;
   margin-top: 3rem;
 }
 
@@ -87,7 +99,7 @@
   border: 1px solid #eaeaea;
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
-  width: 45%;
+  width: 100%;
 }
 
 .card:hover,
@@ -111,6 +123,12 @@
 .logo {
   height: 1em;
   margin-left: 0.5rem;
+}
+
+.section {
+  margin-top: 20px;
+  padding-bottom: 20px;
+  border-bottom:2px solid gainsboro;
 }
 
 @media (max-width: 600px) {

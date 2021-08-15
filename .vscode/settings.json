@@ -1,0 +1,15 @@
+{
+    "[json]": {
+
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "editor.suggest.insertMode": "replace",
+      
+    },"[javascript]": {
+        "editor.formatOnSave": true,
+        "prettier.singleQuote": true,
+        "prettier.semi": false,
+        "prettier.tabWidth": 4
+    }
+}
