@@ -200,7 +200,7 @@ export default function Home() {
             </Head>
           </Grid>
           <Grid item>
-            <Typography variant="h2">金門縣線上振興申請補助平台</Typography>
+            <Typography variant="h2">金門縣線上振興補助申請平台</Typography>
           </Grid>
           <Grid id="apply" item xs={12}>
             <Grid container spacing={4}>
@@ -269,7 +269,7 @@ export default function Home() {
                                   name="help"
                                   formControlProps={{ margin: "none" }}
                                   data={{
-                                    label: "未滿20代為申請",
+                                    label: "未滿20以下代為申請",
                                     value: false,
                                   }}
                                   onClick={handleCheckBox}
