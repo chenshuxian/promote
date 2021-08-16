@@ -10,6 +10,9 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import TModal from "./components/modal.js";
+import post from "../src/post";
+import Image from "next/image";
+import houseId from "../public/house_id.jpeg";
 
 import {
   Typography,
@@ -127,9 +130,6 @@ const useStyles = makeStyles({
   },
 });
 
-const onSubmit = async (values) => {
-  console.log(values);
-};
 const checkSubmit = async (values) => {
   console.log(values);
 };
@@ -137,6 +137,8 @@ const checkSubmit = async (values) => {
 export default function Home() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [content, setContent] = React.useState("");
+  const [title, setTitle] = React.useState("");
   const [checked, setChecked] = React.useState("none");
   // yes, this can even be async
 
@@ -153,11 +155,30 @@ export default function Home() {
   }
 
   const handleOpen = () => {
+    setContent(<Image src={houseId} />);
+    setTitle("戶號位於戶口名簿左上方");
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const onSubmit = async (values) => {
+    // 狀態設定為已申請
+    delete values.help; //去除不要的值
+
+    values.status = 1;
+    values.ip = 1234;
+    values.born = parseInt(values.born);
+    values.bank_id = parseInt(values.bank_id);
+    post("http://localhost:3000/api/apply", values)
+      .then((data) => {
+        setTitle(data.title);
+        setContent(data.msg);
+        setOpen(true);
+      })
+      .catch((error) => console.error(error));
   };
 
   return (
@@ -397,7 +418,12 @@ export default function Home() {
         </Grid>
       </Grid>
       <Footer />
-      <TModal handleClose={handleClose} open={open} />
+      <TModal
+        handleClose={handleClose}
+        open={open}
+        content={content}
+        title={title}
+      />
     </Grid>
   );
 }
