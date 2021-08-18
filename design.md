@@ -20,6 +20,8 @@ parent_id: 監護人id
 parent_name : 收款者姓名
 house_id : 戶號
 born: 出生年月日
+is_same_name: 帳戶是否和本人同名
+bank_name: 銀行帳戶姓名
 bank_id: 金融機構代號
 bank_account: 金融機構帳號
 apply_state: 0 尚未申請、1審核中、2已審核、3已撥款、4撥款失敗
@@ -29,6 +31,9 @@ reason: 非本人收原因，(未成年、警示帳戶、凍結帳戶)
 relationship: 關係(本人、父母、監護人、親友)
 create_time:
 update_time:
+pay_date: 撥款人
+editor: 編輯人
+reason: 他人代領原因
 
 rule :
 1. 金融帳號名稱check後端是否和本人同名，不同提出警告需為本人。

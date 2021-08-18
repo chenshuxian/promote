@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
@@ -7,12 +7,15 @@ import { TextField, Select, Checkboxes } from "mui-rff";
 import { makeStyles } from "@material-ui/core";
 import ImageSearchIcon from "@material-ui/icons/ImageSearch";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import CancelIcon from "@material-ui/icons/Cancel";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import TModal from "./components/modal.js";
 import post from "../src/post";
 import Image from "next/image";
 import houseId from "../public/house_id.jpeg";
+import NyModal from "./components/NyModal";
 
 import {
   Typography,
@@ -24,62 +27,6 @@ import {
   MenuItem,
   IconButton,
 } from "@material-ui/core";
-
-const formFields = [
-  {
-    size: 12,
-    field: (
-      <TextField
-        label="身份證"
-        name="id"
-        margin="none"
-        required={true}
-        placeholder="w123456789"
-        variant="outlined"
-      />
-    ),
-  },
-  {
-    size: 12,
-    field: (
-      <TextField
-        label="出生年月日"
-        name="born"
-        margin="none"
-        required={true}
-        placeholder="格式:0890813"
-        variant="outlined"
-      />
-    ),
-  },
-  {
-    size: 12,
-    field: (
-      <Select
-        name="bank_id"
-        label="銀行機構代號"
-        formControlProps={{ margin: "none" }}
-        variant="outlined"
-      >
-        <MenuItem value="005">005 土地銀行</MenuItem>
-        <MenuItem value="700">700 郵局</MenuItem>
-        <MenuItem value="224">224 金門信用合作社</MenuItem>
-      </Select>
-    ),
-  },
-  {
-    size: 12,
-    field: (
-      <TextField
-        label="銀行帳號"
-        name="bank_account"
-        margin="none"
-        required={true}
-        variant="outlined"
-      />
-    ),
-  },
-];
 
 const checkFields = [
   {
@@ -136,15 +83,112 @@ const checkSubmit = async (values) => {
 
 export default function Home() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const [content, setContent] = React.useState("");
-  const [title, setTitle] = React.useState("");
-  const [checked, setChecked] = React.useState("none");
-  // yes, this can even be async
+  const [open, setOpen] = useState(false);
+  const [nyOpen, setNyOpen] = useState(false);
+  const [content, setContent] = useState("");
+  const [title, setTitle] = useState("");
+  const [checked, setChecked] = useState("none");
+  const [nameCheck, setNameCheck] = useState("");
+  const [buttonDisable, setButtonDisable] = useState(false);
+  const [id, setID] = useState("");
+  const [formValues, setFormValues] = useState("");
 
-  // yes, this can even be async!
+  const handleOpen = () => {
+    setContent(<Image src={houseId} />);
+    setTitle("戶號位於戶口名簿左上方");
+    setOpen(true);
+  };
+  // 確認使用者狀態
+  /*
+    狀態 >=2 跳出提醒
+    並把送出鈕disable
+  */
+  const checkStatus = (event) => {
+    //console.log(event.target.value);
+    const status = {
+      0: "未申請",
+      1: "審核中",
+      2: "審核通過",
+      3: "已撥款",
+      99: "資格不符,請輸入正確的身份證",
+    };
+    setID(event.target.value);
+    const data = { api: "checkStatus", q: event.target.value };
+    post("http://localhost:3000/api/user", data)
+      .then((data) => {
+        if (data.status >= 2) {
+          setTitle(data.title);
+          setContent(status[data.status]);
+          setButtonDisable(true);
+          setOpen(true);
+        } else {
+          setButtonDisable(false);
+        }
+      })
+      .catch((error) => console.error(error));
+  };
+
+  // 確認使用者戶名
+  const checkName = (event) => {
+    //console.log(event.target.value);
+    const data = { api: "checkName", q: { name: event.target.value, id: id } };
+    post("http://localhost:3000/api/user", data)
+      .then((data) => {
+        if (data.is_same) {
+          setNameCheck(
+            <>
+              <CheckCircleOutlineIcon color="primary" />
+              <Typography>{data.msg}</Typography>
+            </>
+          );
+        } else {
+          setNameCheck(
+            <>
+              <CancelIcon color="error" />
+              <Typography>{data.msg}</Typography>
+            </>
+          );
+        }
+      })
+      .catch((error) => console.error(error));
+  };
+
   async function validate(values) {
     const errors = {};
+    if (!values.id) {
+      errors.id = "身份證不可為空";
+    } else if (!values.id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
+      errors.id = "身份證格式錯誤, 本國W123456789, 國外AB12345678";
+    }
+
+    if (!values.born) {
+      errors.born = "生日不可為空";
+    } else if (isNaN(values.born) || values.born.length !== 7) {
+      errors.born = "生日格式由3位數年份+2位月份+2位日期組成，如:0890102";
+    }
+    if (!values.bank_name) {
+      errors.bank_name = "銀行戶名不可為空";
+    }
+    if (!values.phone) {
+      errors.phone = "電話號碼不可為空";
+    }
+    if (!values.bank_id) {
+      errors.bank_id = "銀行機構代號不可為空";
+    }
+    if (!values.bank_account) {
+      errors.bank_account = "銀行帳號不可為空";
+    } else if (
+      isNaN(values.bank_account) ||
+      values.bank_account.length !== 24
+    ) {
+      errors.bank_account = "銀行帳號由24位數字組成";
+    }
+    if (!values.house_id) {
+      errors.house_id = "戶號不可為空";
+    } else if (!values.house_id.match("^[a-zA-Z]\\d{7}$")) {
+      errors.house_id = "戶號由英文字母為首+7位數字, 如: F1234567";
+    }
+
     return errors;
   }
 
@@ -154,25 +198,81 @@ export default function Home() {
     else setChecked("none");
   }
 
-  const handleOpen = () => {
-    setContent(<Image src={houseId} />);
-    setTitle("戶號位於戶口名簿左上方");
-    setOpen(true);
-  };
-
   const handleClose = () => {
     setOpen(false);
   };
 
-  const onSubmit = async (values) => {
-    // 狀態設定為已申請
-    delete values.help; //去除不要的值
+  const handleNyClose = () => {
+    setNyOpen(false);
+  };
 
-    values.status = 1;
-    values.ip = 1234;
-    values.born = parseInt(values.born);
-    values.bank_id = parseInt(values.bank_id);
-    post("http://localhost:3000/api/apply", values)
+  // obj to arr
+  const objToArr = (values) => {
+    let idToText = {
+      bank_id: "銀行機構",
+      house_id: "戶號",
+      id: "身份證",
+      born: "出生年月日",
+      phone: "手機號碼",
+      bank_account: "銀行帳號",
+      bank_name: "銀行戶名",
+    };
+    let arr = [];
+    let obj = {};
+    for (const [key, value] of Object.entries(values)) {
+      console.log(`${key}: ${value}`);
+      obj = { name: idToText[key], value: value };
+      arr.push(obj);
+    }
+    console.log(arr);
+    return arr;
+  };
+
+  // 申請處理確認
+  // 打開新的提示框要求使用者確認
+  const onSubmit = async (values) => {
+    // 1. 彈出 NyModal
+    let title = "個人資訊確認";
+    let newValues = objToArr(values);
+    let content = (
+      <Grid container spacing={2}>
+        <Grid item>
+          <Typography color="error">
+            請確認所輸入資料完全正確，銀行帳戶確為本人所擁有，如因資料不全造成退匯，所衍生問題或法律責任由本人自行承擔。
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Grid container direction="column" spacing={2}>
+            {newValues.map((v, i) => {
+              return (
+                <Grid key={i} item xs>
+                  <Typography>
+                    {v.name} : {v.value}
+                  </Typography>
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Grid>
+      </Grid>
+    );
+
+    setTitle(title);
+    setContent(content);
+    setNyOpen(true);
+    setFormValues(values);
+  };
+
+  /*
+  申請處理
+  狀態由0改為1申請中
+  */
+  const handleSave = () => {
+    setNyOpen(false);
+    console.log("form " + formValues);
+    formValues.status = 1;
+    formValues.bank_id = parseInt(formValues.bank_id);
+    post("http://localhost:3000/api/apply", formValues)
       .then((data) => {
         setTitle(data.title);
         setContent(data.msg);
@@ -180,6 +280,120 @@ export default function Home() {
       })
       .catch((error) => console.error(error));
   };
+
+  const formFields = [
+    {
+      size: 6,
+      field: (
+        <TextField
+          label="戶號"
+          name="house_id"
+          margin="none"
+          required={true}
+          placeholder="格式:F0890813"
+          variant="outlined"
+        />
+      ),
+    },
+    {
+      size: 6,
+      field: (
+        <IconButton
+          color="primary"
+          aria-label="upload picture"
+          component="span"
+          onClick={handleOpen}
+        >
+          <ImageSearchIcon style={{ fontSize: 30 }} />
+        </IconButton>
+      ),
+    },
+    {
+      size: 12,
+      field: (
+        <TextField
+          label="身份證"
+          name="id"
+          margin="none"
+          required={true}
+          placeholder="w123456789"
+          onBlur={checkStatus}
+          variant="outlined"
+        />
+      ),
+    },
+    {
+      size: 6,
+      field: (
+        <TextField
+          label="出生年月日"
+          name="born"
+          margin="none"
+          required={true}
+          placeholder="格式:0890813"
+          variant="outlined"
+        />
+      ),
+    },
+    {
+      size: 6,
+      field: (
+        <TextField
+          label="聯絡電話"
+          name="phone"
+          margin="none"
+          required={true}
+          placeholder="需提供正確電話"
+          variant="outlined"
+        />
+      ),
+    },
+    {
+      size: 6,
+      field: (
+        <TextField
+          label="銀行戶名"
+          name="bank_name"
+          margin="none"
+          required={true}
+          placeholder="銀行戶名需與紓困人相同"
+          onBlur={checkName}
+          variant="outlined"
+        />
+      ),
+    },
+    {
+      size: 6,
+      field: <Grid container>{nameCheck}</Grid>,
+    },
+    {
+      size: 12,
+      field: (
+        <Select
+          name="bank_id"
+          label="銀行機構代號"
+          formControlProps={{ margin: "none" }}
+          variant="outlined"
+        >
+          <MenuItem value="005">005 土地銀行</MenuItem>
+          <MenuItem value="700">700 郵局</MenuItem>
+          <MenuItem value="224">224 金門信用合作社</MenuItem>
+        </Select>
+      ),
+    },
+    {
+      size: 12,
+      field: (
+        <TextField
+          label="銀行帳號"
+          name="bank_account"
+          margin="none"
+          required={true}
+          variant="outlined"
+        />
+      ),
+    },
+  ];
 
   return (
     <Grid container spacing={8}>
@@ -254,6 +468,9 @@ export default function Home() {
                     <Form
                       onSubmit={onSubmit}
                       checked={checked}
+                      buttonDisable={buttonDisable}
+                      initialValues={{ bank_id: "005" }}
+                      validate={validate}
                       render={({
                         handleSubmit,
                         form,
@@ -264,48 +481,6 @@ export default function Home() {
                         <form onSubmit={handleSubmit} noValidate>
                           <Paper style={{ padding: 16 }}>
                             <Grid container alignItems="flex-start" spacing={2}>
-                              <Grid item xs={12}>
-                                <Checkboxes
-                                  name="help"
-                                  formControlProps={{ margin: "none" }}
-                                  data={{
-                                    label: "未滿20以下代為申請",
-                                    value: false,
-                                  }}
-                                  onClick={handleCheckBox}
-                                />
-                              </Grid>
-                              <Grid item xs={6}>
-                                <TextField
-                                  label="戶號"
-                                  name="house_id"
-                                  margin="none"
-                                  required={true}
-                                  placeholder="格式:0890813"
-                                  variant="outlined"
-                                />
-                              </Grid>
-                              <Grid item xs={6}>
-                                <IconButton
-                                  color="primary"
-                                  aria-label="upload picture"
-                                  component="span"
-                                  onClick={handleOpen}
-                                >
-                                  <ImageSearchIcon style={{ fontSize: 30 }} />
-                                </IconButton>
-                              </Grid>
-                              <Grid item xs={12}>
-                                <TextField
-                                  label="監護人身份證"
-                                  name="parent_id"
-                                  margin="none"
-                                  required={true}
-                                  placeholder="w123456789"
-                                  variant="outlined"
-                                  style={{ display: checked }}
-                                />
-                              </Grid>
                               {formFields.map((item, idx) => (
                                 <Grid item xs={item.size} key={idx}>
                                   {item.field}
@@ -326,13 +501,12 @@ export default function Home() {
                                   variant="contained"
                                   color="primary"
                                   type="submit"
-                                  disabled={submitting}
+                                  disabled={submitting || buttonDisable}
                                 >
                                   送出
                                 </Button>
                               </Grid>
                             </Grid>
-                            <pre>{JSON.stringify(values)}</pre>
                           </Paper>
                         </form>
                       )}
@@ -421,6 +595,13 @@ export default function Home() {
       <TModal
         handleClose={handleClose}
         open={open}
+        content={content}
+        title={title}
+      />
+      <NyModal
+        handleClose={handleNyClose}
+        handleSave={handleSave}
+        open={nyOpen}
         content={content}
         title={title}
       />

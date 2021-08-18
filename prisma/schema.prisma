@@ -9,22 +9,34 @@ datasource db {
 
 model apply {
   id           String    @id @default("null") @db.VarChar(45)
+  name         String    @default("null") @db.VarChar(45)
   parent_id    String?   @db.VarChar(45)
+  parent_name  String    @default("null") @db.VarChar(45)
   house_id     String    @default("0") @db.VarChar(45)
-  born         Int       @default(0)
+  born         String?   @db.VarChar(10)
   bank_id      Int       @default(700)
   bank_account String    @default("0") @db.VarChar(45)
   status       Int       @default(0)
   is_delete    Int       @default(0)
+  ip           Int?      @db.UnsignedInt
   create_time  DateTime  @default(now()) @db.Timestamp(0)
   update_time  DateTime? @db.Timestamp(0)
-  ip           Int?      @db.UnsignedInt
+  phone        String    @default("null") @db.VarChar(45)
+  addr         String    @default("null") @db.VarChar(200)
+  town         Int       @default(1)
+  pay_date     Int       @default(0)
+  editoer      String    @default("null") @db.VarChar(45)
+  reason       Int       @default(1)
+  relationship Int       @default(1)
+  bank_name    String    @default("null") @db.VarChar(45)
+  is_same_name Int       @default(0)
 }
 
 model users {
   id          Int       @id @default(autoincrement())
   name        String    @db.VarChar(45)
   password    String    @default("12345678") @db.VarChar(45)
+  town        String?   @db.VarChar(45)
   create_time DateTime  @default(now()) @db.Timestamp(0)
   update_time DateTime? @db.Timestamp(0)
   is_delete   Int       @default(0)

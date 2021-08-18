@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "dbpull" : "npx prisma db pull",
+    "sync" : "npx prisma generate",
+    "forever" : "forever stopall && forever --minUptime=1000 --spinSleepTime=1000 start -c 'npm run dev' ./ "
   },
   "dependencies": {
     "@babel/core": "^7.15.0",
