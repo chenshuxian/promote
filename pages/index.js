@@ -269,9 +269,7 @@ export default function Home() {
   */
   const handleSave = () => {
     setNyOpen(false);
-    console.log("form " + formValues);
-    formValues.status = 1;
-    formValues.bank_id = parseInt(formValues.bank_id);
+    // formValues.bank_id;
     post("http://localhost:3000/api/apply", formValues)
       .then((data) => {
         setTitle(data.title);

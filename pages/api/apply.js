@@ -46,6 +46,7 @@ export default async function handler(req, res) {
     let id = req.body.id;
     let house_id = req.body.house_id;
     let born = req.body.born;
+    let status = req.body.status ? req.body.status : 1;
 
     errMsg = await checkdata(id, house_id, born);
     // console.log(`errMsg ${errMsg.length} ${errMsg} `);
@@ -73,7 +74,7 @@ export default async function handler(req, res) {
             ],
           },
           data: {
-            status: req.body.status,
+            status: status,
             bank_account: req.body.bank_account,
             bank_id: req.body.bank_id,
             bank_name: req.body.bank_name,
