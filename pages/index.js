@@ -28,6 +28,9 @@ import {
   IconButton,
 } from "@material-ui/core";
 
+const userUrl = "http://localhost:3000/api/user";
+const applyUrl = "http://localhost:3000/api/apply";
+
 const checkFields = [
   {
     size: 12,
@@ -114,7 +117,7 @@ export default function Home() {
     };
     setID(event.target.value);
     const data = { api: "checkStatus", q: event.target.value };
-    post("http://localhost:3000/api/user", data)
+    post({ userUrl }, data)
       .then((data) => {
         if (data.status >= 2) {
           setTitle(data.title);
@@ -132,7 +135,7 @@ export default function Home() {
   const checkName = (event) => {
     //console.log(event.target.value);
     const data = { api: "checkName", q: { name: event.target.value, id: id } };
-    post("http://localhost:3000/api/user", data)
+    post({ userUrl }, data)
       .then((data) => {
         if (data.is_same) {
           setNameCheck(
@@ -270,7 +273,7 @@ export default function Home() {
   const handleSave = () => {
     setNyOpen(false);
     // formValues.bank_id;
-    post("http://localhost:3000/api/apply", formValues)
+    post({ applyUrl }, formValues)
       .then((data) => {
         setTitle(data.title);
         setContent(data.msg);
