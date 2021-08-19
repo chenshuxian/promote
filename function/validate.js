@@ -1,4 +1,6 @@
-export default async function validate(values) {
+export default async function validate(values, bank_id) {
+  // console.log(`validate ${bank_id}`);
+  let bank_len = bank_id === "005" ? 12 : 14;
   const errors = {};
   if (!values.id) {
     errors.id = "身份證不可為空";
@@ -30,10 +32,14 @@ export default async function validate(values) {
   if (!values.bank_id) {
     errors.bank_id = "銀行機構代號不可為空";
   }
+  // 土銀12碼、郵局、金門合作社14碼
   if (!values.bank_account) {
     errors.bank_account = "銀行帳號不可為空";
-  } else if (isNaN(values.bank_account) || values.bank_account.length !== 24) {
-    errors.bank_account = "銀行帳號由24位數字組成";
+  } else if (
+    isNaN(values.bank_account) ||
+    values.bank_account.length !== bank_len
+  ) {
+    errors.bank_account = `銀行帳號由${bank_len}位數字組成`;
   }
   if (!values.house_id) {
     errors.house_id = "戶號不可為空";

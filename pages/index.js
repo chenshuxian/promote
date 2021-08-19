@@ -91,6 +91,7 @@ export default function Home() {
   const [buttonDisable, setButtonDisable] = useState(false);
   const [id, setID] = useState("");
   const [formValues, setFormValues] = useState("");
+  const [bank_id, setBank_id] = useState("005");
 
   const handleOpen = () => {
     setContent(<Image src={houseId} />);
@@ -152,11 +153,11 @@ export default function Home() {
       .catch((error) => console.error(error));
   };
 
-  function handleCheckBox(event) {
-    console.log("checkbox: " + event.target.checked);
-    if (event.target.checked) setChecked("block");
-    else setChecked("none");
-  }
+  // function handleCheckBox(event) {
+  //   console.log("checkbox: " + event.target.checked);
+  //   if (event.target.checked) setChecked("block");
+  //   else setChecked("none");
+  // }
 
   const handleClose = () => {
     setOpen(false);
@@ -343,6 +344,7 @@ export default function Home() {
           label="銀行機構代號"
           formControlProps={{ margin: "none" }}
           variant="outlined"
+          onClick={(event) => setBank_id(event.target.value)}
         >
           <MenuItem value="005">005 土地銀行</MenuItem>
           <MenuItem value="700">700 郵局</MenuItem>
@@ -471,7 +473,9 @@ export default function Home() {
                         notice1: true,
                         notice2: true,
                       }}
-                      validate={validate}
+                      validate={(values) => {
+                        return validate(values, bank_id);
+                      }}
                       render={({
                         handleSubmit,
                         form,
@@ -487,16 +491,6 @@ export default function Home() {
                                   {item.field}
                                 </Grid>
                               ))}
-                              {/* <Grid item>
-                                <Typography color="error">
-                                  茲聲明本人以上所填個人資料俱確實無訛，如有不實，願負法律責任
-                                </Typography>
-                              </Grid>
-                              <Grid item>
-                                <Typography color="error">
-                                  同意提供此申請相關文件中所提供之個人資料，授權供縣府發放紓困金妥善使用
-                                </Typography>
-                              </Grid> */}
                               <Grid item>
                                 <Grid container spacing={1}>
                                   <Grid item>
