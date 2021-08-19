@@ -1,42 +1,137 @@
 "use strict";
-/*
- * ATTENTION: An "eval-source-map" devtool has been used.
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
 (() => {
 var exports = {};
-exports.id = "pages/api/apply";
-exports.ids = ["pages/api/apply"];
+exports.id = 86;
+exports.ids = [86];
 exports.modules = {
 
-/***/ "./pages/api/apply.js":
-/*!****************************!*\
-  !*** ./pages/api/apply.js ***!
-  \****************************/
+/***/ 8802:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ handler)\n/* harmony export */ });\n/* harmony import */ var _prisma_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @prisma/client */ \"@prisma/client\");\n/* harmony import */ var _prisma_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_prisma_client__WEBPACK_IMPORTED_MODULE_0__);\n// Next.js API route support: https://nextjs.org/docs/api-routes/introduction\n // import { check } from \"prettier\";\n\nconst ipInt = __webpack_require__(/*! ip-to-int */ \"ip-to-int\");\n\nconst prisma = new _prisma_client__WEBPACK_IMPORTED_MODULE_0__.PrismaClient({\n  errorFormat: \"minimal\"\n});\n\nconst checkdata = async (id, house_id, born) => {\n  let msg = [];\n\n  try {\n    const user = await prisma.apply.findUnique({\n      where: {\n        id: id\n      },\n      select: {\n        house_id: true,\n        born: true\n      }\n    });\n\n    if (user.house_id !== house_id) {\n      msg.push(\"戶號\");\n    }\n\n    if (user.born !== born) {\n      msg.push(\"生日\");\n    }\n\n    return msg;\n  } catch (err) {\n    console.log(err.code);\n  }\n};\n\nasync function handler(req, res) {\n  if (req.method === \"POST\") {\n    // 新增申請資料\n    let ip = req.connection.remoteAddress === \"::1\" ? \"127.0.0.1\" : req.connection.remoteAddress;\n    req.body.ip = parseInt(ipInt(ip).toInt());\n    let title = \"申請成功\";\n    let msg = \"已完成申請留程，靜待後續審核\";\n    let errMsg;\n    let id = req.body.id;\n    let house_id = req.body.house_id;\n    let born = req.body.born;\n    let status = req.body.status ? req.body.status : 1;\n    errMsg = await checkdata(id, house_id, born); // console.log(`errMsg ${errMsg.length} ${errMsg} `);\n    // 驗證正確\n\n    if (errMsg.length === 0) {\n      try {\n        const update = await prisma.apply.updateMany({\n          where: {\n            AND: [{\n              born: {\n                equals: req.body.born\n              }\n            }, {\n              id: {\n                equals: req.body.id\n              }\n            }, {\n              house_id: {\n                equals: req.body.house_id\n              }\n            }]\n          },\n          data: {\n            status: status,\n            bank_account: req.body.bank_account,\n            bank_id: req.body.bank_id,\n            bank_name: req.body.bank_name,\n            phone: req.body.phone\n          }\n        });\n        return res.status(200).json({\n          title,\n          msg\n        });\n      } catch (err) {\n        console.log(err);\n\n        if (err.code === \"P2002\") {\n          return res.status(400).json({\n            title: \"申請失敗\",\n            msg: \"此身份證已經被申請，請確認輸入是否有誤\"\n          });\n        }\n\n        return res.status(400).send(\"建檔失敗\");\n      }\n    } else {\n      //驗證失敗\n      return res.status(200).json({\n        title: \"申請驗證失敗，身份證、戶號、生日需正確\",\n        msg: errMsg.toString() + \"驗證失敗\"\n      });\n    }\n  } else {\n    res.status(200).json({\n      name: \"John Doe GET\"\n    });\n  }\n}//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9wYWdlcy9hcGkvYXBwbHkuanMuanMiLCJtYXBwaW5ncyI6Ijs7Ozs7O0FBQUE7Q0FFQTs7QUFDQSxNQUFNRSxLQUFLLEdBQUdDLG1CQUFPLENBQUMsNEJBQUQsQ0FBckI7O0FBQ0EsTUFBTUMsTUFBTSxHQUFHLElBQUlKLHdEQUFKLENBQWlCO0FBQzlCSyxFQUFBQSxXQUFXLEVBQUU7QUFEaUIsQ0FBakIsQ0FBZjs7QUFJQSxNQUFNQyxTQUFTLEdBQUcsT0FBT0MsRUFBUCxFQUFXQyxRQUFYLEVBQXFCQyxJQUFyQixLQUE4QjtBQUM5QyxNQUFJQyxHQUFHLEdBQUcsRUFBVjs7QUFDQSxNQUFJO0FBQ0YsVUFBTUMsSUFBSSxHQUFHLE1BQU1QLE1BQU0sQ0FBQ1EsS0FBUCxDQUFhQyxVQUFiLENBQXdCO0FBQ3pDQyxNQUFBQSxLQUFLLEVBQUU7QUFDTFAsUUFBQUEsRUFBRSxFQUFFQTtBQURDLE9BRGtDO0FBSXpDUSxNQUFBQSxNQUFNLEVBQUU7QUFDTlAsUUFBQUEsUUFBUSxFQUFFLElBREo7QUFFTkMsUUFBQUEsSUFBSSxFQUFFO0FBRkE7QUFKaUMsS0FBeEIsQ0FBbkI7O0FBVUEsUUFBSUUsSUFBSSxDQUFDSCxRQUFMLEtBQWtCQSxRQUF0QixFQUFnQztBQUM5QkUsTUFBQUEsR0FBRyxDQUFDTSxJQUFKLENBQVMsSUFBVDtBQUNEOztBQUNELFFBQUlMLElBQUksQ0FBQ0YsSUFBTCxLQUFjQSxJQUFsQixFQUF3QjtBQUN0QkMsTUFBQUEsR0FBRyxDQUFDTSxJQUFKLENBQVMsSUFBVDtBQUNEOztBQUNELFdBQU9OLEdBQVA7QUFDRCxHQWxCRCxDQWtCRSxPQUFPTyxHQUFQLEVBQVk7QUFDWkMsSUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQVlGLEdBQUcsQ0FBQ0csSUFBaEI7QUFDRDtBQUNGLENBdkJEOztBQXlCZSxlQUFlQyxPQUFmLENBQXVCQyxHQUF2QixFQUE0QkMsR0FBNUIsRUFBaUM7QUFDOUMsTUFBSUQsR0FBRyxDQUFDRSxNQUFKLEtBQWUsTUFBbkIsRUFBMkI7QUFDekI7QUFDQSxRQUFJQyxFQUFFLEdBQ0pILEdBQUcsQ0FBQ0ksVUFBSixDQUFlQyxhQUFmLEtBQWlDLEtBQWpDLEdBQ0ksV0FESixHQUVJTCxHQUFHLENBQUNJLFVBQUosQ0FBZUMsYUFIckI7QUFJQUwsSUFBQUEsR0FBRyxDQUFDTSxJQUFKLENBQVNILEVBQVQsR0FBY0ksUUFBUSxDQUFDM0IsS0FBSyxDQUFDdUIsRUFBRCxDQUFMLENBQVVLLEtBQVYsRUFBRCxDQUF0QjtBQUVBLFFBQUlDLEtBQUssR0FBRyxNQUFaO0FBQ0EsUUFBSXJCLEdBQUcsR0FBRyxnQkFBVjtBQUNBLFFBQUlzQixNQUFKO0FBQ0EsUUFBSXpCLEVBQUUsR0FBR2UsR0FBRyxDQUFDTSxJQUFKLENBQVNyQixFQUFsQjtBQUNBLFFBQUlDLFFBQVEsR0FBR2MsR0FBRyxDQUFDTSxJQUFKLENBQVNwQixRQUF4QjtBQUNBLFFBQUlDLElBQUksR0FBR2EsR0FBRyxDQUFDTSxJQUFKLENBQVNuQixJQUFwQjtBQUNBLFFBQUl3QixNQUFNLEdBQUdYLEdBQUcsQ0FBQ00sSUFBSixDQUFTSyxNQUFULEdBQWtCWCxHQUFHLENBQUNNLElBQUosQ0FBU0ssTUFBM0IsR0FBb0MsQ0FBakQ7QUFFQUQsSUFBQUEsTUFBTSxHQUFHLE1BQU0xQixTQUFTLENBQUNDLEVBQUQsRUFBS0MsUUFBTCxFQUFlQyxJQUFmLENBQXhCLENBaEJ5QixDQWlCekI7QUFDQTs7QUFDQSxRQUFJdUIsTUFBTSxDQUFDRSxNQUFQLEtBQWtCLENBQXRCLEVBQXlCO0FBQ3ZCLFVBQUk7QUFDRixjQUFNQyxNQUFNLEdBQUcsTUFBTS9CLE1BQU0sQ0FBQ1EsS0FBUCxDQUFhd0IsVUFBYixDQUF3QjtBQUMzQ3RCLFVBQUFBLEtBQUssRUFBRTtBQUNMdUIsWUFBQUEsR0FBRyxFQUFFLENBQ0g7QUFDRTVCLGNBQUFBLElBQUksRUFBRTtBQUNKNkIsZ0JBQUFBLE1BQU0sRUFBRWhCLEdBQUcsQ0FBQ00sSUFBSixDQUFTbkI7QUFEYjtBQURSLGFBREcsRUFNSDtBQUNFRixjQUFBQSxFQUFFLEVBQUU7QUFDRitCLGdCQUFBQSxNQUFNLEVBQUVoQixHQUFHLENBQUNNLElBQUosQ0FBU3JCO0FBRGY7QUFETixhQU5HLEVBV0g7QUFDRUMsY0FBQUEsUUFBUSxFQUFFO0FBQ1I4QixnQkFBQUEsTUFBTSxFQUFFaEIsR0FBRyxDQUFDTSxJQUFKLENBQVNwQjtBQURUO0FBRFosYUFYRztBQURBLFdBRG9DO0FBb0IzQytCLFVBQUFBLElBQUksRUFBRTtBQUNKTixZQUFBQSxNQUFNLEVBQUVBLE1BREo7QUFFSk8sWUFBQUEsWUFBWSxFQUFFbEIsR0FBRyxDQUFDTSxJQUFKLENBQVNZLFlBRm5CO0FBR0pDLFlBQUFBLE9BQU8sRUFBRW5CLEdBQUcsQ0FBQ00sSUFBSixDQUFTYSxPQUhkO0FBSUpDLFlBQUFBLFNBQVMsRUFBRXBCLEdBQUcsQ0FBQ00sSUFBSixDQUFTYyxTQUpoQjtBQUtKQyxZQUFBQSxLQUFLLEVBQUVyQixHQUFHLENBQUNNLElBQUosQ0FBU2U7QUFMWjtBQXBCcUMsU0FBeEIsQ0FBckI7QUE2QkEsZUFBT3BCLEdBQUcsQ0FBQ1UsTUFBSixDQUFXLEdBQVgsRUFBZ0JXLElBQWhCLENBQXFCO0FBQzFCYixVQUFBQSxLQUQwQjtBQUUxQnJCLFVBQUFBO0FBRjBCLFNBQXJCLENBQVA7QUFJRCxPQWxDRCxDQWtDRSxPQUFPTyxHQUFQLEVBQVk7QUFDWkMsUUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQVlGLEdBQVo7O0FBQ0EsWUFBSUEsR0FBRyxDQUFDRyxJQUFKLEtBQWEsT0FBakIsRUFBMEI7QUFDeEIsaUJBQU9HLEdBQUcsQ0FBQ1UsTUFBSixDQUFXLEdBQVgsRUFBZ0JXLElBQWhCLENBQXFCO0FBQzFCYixZQUFBQSxLQUFLLEVBQUUsTUFEbUI7QUFFMUJyQixZQUFBQSxHQUFHLEVBQUU7QUFGcUIsV0FBckIsQ0FBUDtBQUlEOztBQUNELGVBQU9hLEdBQUcsQ0FBQ1UsTUFBSixDQUFXLEdBQVgsRUFBZ0JZLElBQWhCLENBQXFCLE1BQXJCLENBQVA7QUFDRDtBQUNGLEtBN0NELE1BNkNPO0FBQ0w7QUFDQSxhQUFPdEIsR0FBRyxDQUFDVSxNQUFKLENBQVcsR0FBWCxFQUFnQlcsSUFBaEIsQ0FBcUI7QUFDMUJiLFFBQUFBLEtBQUssRUFBRSxxQkFEbUI7QUFFMUJyQixRQUFBQSxHQUFHLEVBQUVzQixNQUFNLENBQUNjLFFBQVAsS0FBb0I7QUFGQyxPQUFyQixDQUFQO0FBSUQ7QUFDRixHQXZFRCxNQXVFTztBQUNMdkIsSUFBQUEsR0FBRyxDQUFDVSxNQUFKLENBQVcsR0FBWCxFQUFnQlcsSUFBaEIsQ0FBcUI7QUFBRUcsTUFBQUEsSUFBSSxFQUFFO0FBQVIsS0FBckI7QUFDRDtBQUNGIiwic291cmNlcyI6WyJ3ZWJwYWNrOi8vcHJvbW90ZS8uL3BhZ2VzL2FwaS9hcHBseS5qcz9kYTFmIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIE5leHQuanMgQVBJIHJvdXRlIHN1cHBvcnQ6IGh0dHBzOi8vbmV4dGpzLm9yZy9kb2NzL2FwaS1yb3V0ZXMvaW50cm9kdWN0aW9uXG5pbXBvcnQgeyBQcmlzbWFDbGllbnQsIFByaXNtYUVycm9ycyB9IGZyb20gXCJAcHJpc21hL2NsaWVudFwiO1xuLy8gaW1wb3J0IHsgY2hlY2sgfSBmcm9tIFwicHJldHRpZXJcIjtcbmNvbnN0IGlwSW50ID0gcmVxdWlyZShcImlwLXRvLWludFwiKTtcbmNvbnN0IHByaXNtYSA9IG5ldyBQcmlzbWFDbGllbnQoe1xuICBlcnJvckZvcm1hdDogXCJtaW5pbWFsXCIsXG59KTtcblxuY29uc3QgY2hlY2tkYXRhID0gYXN5bmMgKGlkLCBob3VzZV9pZCwgYm9ybikgPT4ge1xuICBsZXQgbXNnID0gW107XG4gIHRyeSB7XG4gICAgY29uc3QgdXNlciA9IGF3YWl0IHByaXNtYS5hcHBseS5maW5kVW5pcXVlKHtcbiAgICAgIHdoZXJlOiB7XG4gICAgICAgIGlkOiBpZCxcbiAgICAgIH0sXG4gICAgICBzZWxlY3Q6IHtcbiAgICAgICAgaG91c2VfaWQ6IHRydWUsXG4gICAgICAgIGJvcm46IHRydWUsXG4gICAgICB9LFxuICAgIH0pO1xuXG4gICAgaWYgKHVzZXIuaG91c2VfaWQgIT09IGhvdXNlX2lkKSB7XG4gICAgICBtc2cucHVzaChcIuaItuiZn1wiKTtcbiAgICB9XG4gICAgaWYgKHVzZXIuYm9ybiAhPT0gYm9ybikge1xuICAgICAgbXNnLnB1c2goXCLnlJ/ml6VcIik7XG4gICAgfVxuICAgIHJldHVybiBtc2c7XG4gIH0gY2F0Y2ggKGVycikge1xuICAgIGNvbnNvbGUubG9nKGVyci5jb2RlKTtcbiAgfVxufTtcblxuZXhwb3J0IGRlZmF1bHQgYXN5bmMgZnVuY3Rpb24gaGFuZGxlcihyZXEsIHJlcykge1xuICBpZiAocmVxLm1ldGhvZCA9PT0gXCJQT1NUXCIpIHtcbiAgICAvLyDmlrDlop7nlLPoq4vos4fmlplcbiAgICBsZXQgaXAgPVxuICAgICAgcmVxLmNvbm5lY3Rpb24ucmVtb3RlQWRkcmVzcyA9PT0gXCI6OjFcIlxuICAgICAgICA/IFwiMTI3LjAuMC4xXCJcbiAgICAgICAgOiByZXEuY29ubmVjdGlvbi5yZW1vdGVBZGRyZXNzO1xuICAgIHJlcS5ib2R5LmlwID0gcGFyc2VJbnQoaXBJbnQoaXApLnRvSW50KCkpO1xuXG4gICAgbGV0IHRpdGxlID0gXCLnlLPoq4vmiJDlip9cIjtcbiAgICBsZXQgbXNnID0gXCLlt7LlrozmiJDnlLPoq4vnlZnnqIvvvIzpnZzlvoXlvoznuozlr6nmoLhcIjtcbiAgICBsZXQgZXJyTXNnO1xuICAgIGxldCBpZCA9IHJlcS5ib2R5LmlkO1xuICAgIGxldCBob3VzZV9pZCA9IHJlcS5ib2R5LmhvdXNlX2lkO1xuICAgIGxldCBib3JuID0gcmVxLmJvZHkuYm9ybjtcbiAgICBsZXQgc3RhdHVzID0gcmVxLmJvZHkuc3RhdHVzID8gcmVxLmJvZHkuc3RhdHVzIDogMTtcblxuICAgIGVyck1zZyA9IGF3YWl0IGNoZWNrZGF0YShpZCwgaG91c2VfaWQsIGJvcm4pO1xuICAgIC8vIGNvbnNvbGUubG9nKGBlcnJNc2cgJHtlcnJNc2cubGVuZ3RofSAke2Vyck1zZ30gYCk7XG4gICAgLy8g6amX6K2J5q2j56K6XG4gICAgaWYgKGVyck1zZy5sZW5ndGggPT09IDApIHtcbiAgICAgIHRyeSB7XG4gICAgICAgIGNvbnN0IHVwZGF0ZSA9IGF3YWl0IHByaXNtYS5hcHBseS51cGRhdGVNYW55KHtcbiAgICAgICAgICB3aGVyZToge1xuICAgICAgICAgICAgQU5EOiBbXG4gICAgICAgICAgICAgIHtcbiAgICAgICAgICAgICAgICBib3JuOiB7XG4gICAgICAgICAgICAgICAgICBlcXVhbHM6IHJlcS5ib2R5LmJvcm4sXG4gICAgICAgICAgICAgICAgfSxcbiAgICAgICAgICAgICAgfSxcbiAgICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgIGlkOiB7XG4gICAgICAgICAgICAgICAgICBlcXVhbHM6IHJlcS5ib2R5LmlkLFxuICAgICAgICAgICAgICAgIH0sXG4gICAgICAgICAgICAgIH0sXG4gICAgICAgICAgICAgIHtcbiAgICAgICAgICAgICAgICBob3VzZV9pZDoge1xuICAgICAgICAgICAgICAgICAgZXF1YWxzOiByZXEuYm9keS5ob3VzZV9pZCxcbiAgICAgICAgICAgICAgICB9LFxuICAgICAgICAgICAgICB9LFxuICAgICAgICAgICAgXSxcbiAgICAgICAgICB9LFxuICAgICAgICAgIGRhdGE6IHtcbiAgICAgICAgICAgIHN0YXR1czogc3RhdHVzLFxuICAgICAgICAgICAgYmFua19hY2NvdW50OiByZXEuYm9keS5iYW5rX2FjY291bnQsXG4gICAgICAgICAgICBiYW5rX2lkOiByZXEuYm9keS5iYW5rX2lkLFxuICAgICAgICAgICAgYmFua19uYW1lOiByZXEuYm9keS5iYW5rX25hbWUsXG4gICAgICAgICAgICBwaG9uZTogcmVxLmJvZHkucGhvbmUsXG4gICAgICAgICAgfSxcbiAgICAgICAgfSk7XG5cbiAgICAgICAgcmV0dXJuIHJlcy5zdGF0dXMoMjAwKS5qc29uKHtcbiAgICAgICAgICB0aXRsZSxcbiAgICAgICAgICBtc2csXG4gICAgICAgIH0pO1xuICAgICAgfSBjYXRjaCAoZXJyKSB7XG4gICAgICAgIGNvbnNvbGUubG9nKGVycik7XG4gICAgICAgIGlmIChlcnIuY29kZSA9PT0gXCJQMjAwMlwiKSB7XG4gICAgICAgICAgcmV0dXJuIHJlcy5zdGF0dXMoNDAwKS5qc29uKHtcbiAgICAgICAgICAgIHRpdGxlOiBcIueUs+iri+WkseaVl1wiLFxuICAgICAgICAgICAgbXNnOiBcIuatpOi6q+S7veitieW3sue2k+iiq+eUs+iri++8jOiri+eiuuiqjei8uOWFpeaYr+WQpuacieiqpFwiLFxuICAgICAgICAgIH0pO1xuICAgICAgICB9XG4gICAgICAgIHJldHVybiByZXMuc3RhdHVzKDQwMCkuc2VuZChcIuW7uuaqlOWkseaVl1wiKTtcbiAgICAgIH1cbiAgICB9IGVsc2Uge1xuICAgICAgLy/pqZforYnlpLHmlZdcbiAgICAgIHJldHVybiByZXMuc3RhdHVzKDIwMCkuanNvbih7XG4gICAgICAgIHRpdGxlOiBcIueUs+iri+mpl+itieWkseaVl++8jOi6q+S7veitieOAgeaItuiZn+OAgeeUn+aXpemcgOato+eiulwiLFxuICAgICAgICBtc2c6IGVyck1zZy50b1N0cmluZygpICsgXCLpqZforYnlpLHmlZdcIixcbiAgICAgIH0pO1xuICAgIH1cbiAgfSBlbHNlIHtcbiAgICByZXMuc3RhdHVzKDIwMCkuanNvbih7IG5hbWU6IFwiSm9obiBEb2UgR0VUXCIgfSk7XG4gIH1cbn1cbiJdLCJuYW1lcyI6WyJQcmlzbWFDbGllbnQiLCJQcmlzbWFFcnJvcnMiLCJpcEludCIsInJlcXVpcmUiLCJwcmlzbWEiLCJlcnJvckZvcm1hdCIsImNoZWNrZGF0YSIsImlkIiwiaG91c2VfaWQiLCJib3JuIiwibXNnIiwidXNlciIsImFwcGx5IiwiZmluZFVuaXF1ZSIsIndoZXJlIiwic2VsZWN0IiwicHVzaCIsImVyciIsImNvbnNvbGUiLCJsb2ciLCJjb2RlIiwiaGFuZGxlciIsInJlcSIsInJlcyIsIm1ldGhvZCIsImlwIiwiY29ubmVjdGlvbiIsInJlbW90ZUFkZHJlc3MiLCJib2R5IiwicGFyc2VJbnQiLCJ0b0ludCIsInRpdGxlIiwiZXJyTXNnIiwic3RhdHVzIiwibGVuZ3RoIiwidXBkYXRlIiwidXBkYXRlTWFueSIsIkFORCIsImVxdWFscyIsImRhdGEiLCJiYW5rX2FjY291bnQiLCJiYW5rX2lkIiwiYmFua19uYW1lIiwicGhvbmUiLCJqc29uIiwic2VuZCIsInRvU3RyaW5nIiwibmFtZSJdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///./pages/api/apply.js\n");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ handler)
+/* harmony export */ });
+/* harmony import */ var _prisma_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(212);
+/* harmony import */ var _prisma_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_prisma_client__WEBPACK_IMPORTED_MODULE_0__);
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+ // import { check } from "prettier";
+
+const ipInt = __webpack_require__(5903);
+
+const prisma = new _prisma_client__WEBPACK_IMPORTED_MODULE_0__.PrismaClient({
+  errorFormat: "minimal"
+});
+
+const checkdata = async (id, house_id, born) => {
+  let msg = [];
+
+  try {
+    const user = await prisma.apply.findUnique({
+      where: {
+        id: id
+      },
+      select: {
+        house_id: true,
+        born: true
+      }
+    });
+
+    if (user.house_id !== house_id) {
+      msg.push("戶號");
+    }
+
+    if (user.born !== born) {
+      msg.push("生日");
+    }
+
+    return msg;
+  } catch (err) {
+    console.log(err.code);
+  }
+};
+
+async function handler(req, res) {
+  if (req.method === "POST") {
+    // 新增申請資料
+    let ip = req.connection.remoteAddress === "::1" ? "127.0.0.1" : req.connection.remoteAddress;
+    req.body.ip = parseInt(ipInt(ip).toInt());
+    let title = "申請成功";
+    let msg = "已完成申請留程，靜待後續審核";
+    let errMsg;
+    let id = req.body.id;
+    let house_id = req.body.house_id;
+    let born = req.body.born;
+    let status = req.body.status ? req.body.status : 1;
+    errMsg = await checkdata(id, house_id, born); // console.log(`errMsg ${errMsg.length} ${errMsg} `);
+    // 驗證正確
+
+    if (errMsg.length === 0) {
+      try {
+        const update = await prisma.apply.updateMany({
+          where: {
+            AND: [{
+              born: {
+                equals: req.body.born
+              }
+            }, {
+              id: {
+                equals: req.body.id
+              }
+            }, {
+              house_id: {
+                equals: req.body.house_id
+              }
+            }]
+          },
+          data: {
+            status: status,
+            bank_account: req.body.bank_account,
+            bank_id: req.body.bank_id,
+            bank_name: req.body.bank_name,
+            phone: req.body.phone
+          }
+        });
+        return res.status(200).json({
+          title,
+          msg
+        });
+      } catch (err) {
+        console.log(err);
+
+        if (err.code === "P2002") {
+          return res.status(400).json({
+            title: "申請失敗",
+            msg: "此身份證已經被申請，請確認輸入是否有誤"
+          });
+        }
+
+        return res.status(400).send("建檔失敗");
+      }
+    } else {
+      //驗證失敗
+      return res.status(200).json({
+        title: "申請驗證失敗，身份證、戶號、生日需正確",
+        msg: errMsg.toString() + "驗證失敗"
+      });
+    }
+  } else {
+    res.status(200).json({
+      name: "John Doe GET"
+    });
+  }
+}
 
 /***/ }),
 
-/***/ "@prisma/client":
-/*!*********************************!*\
-  !*** external "@prisma/client" ***!
-  \*********************************/
+/***/ 212:
 /***/ ((module) => {
 
 module.exports = require("@prisma/client");
 
 /***/ }),
 
-/***/ "ip-to-int":
-/*!****************************!*\
-  !*** external "ip-to-int" ***!
-  \****************************/
+/***/ 5903:
 /***/ ((module) => {
 
 module.exports = require("ip-to-int");
@@ -50,7 +145,7 @@ module.exports = require("ip-to-int");
 var __webpack_require__ = require("../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = (__webpack_exec__("./pages/api/apply.js"));
+var __webpack_exports__ = (__webpack_exec__(8802));
 module.exports = __webpack_exports__;
 
 })();

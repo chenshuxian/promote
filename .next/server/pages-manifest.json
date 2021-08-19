@@ -1,6 +1,15 @@
 {
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
+  "/admin": "pages/admin.html",
+  "/api/apply": "pages/api/apply.js",
+  "/api/user": "pages/api/user.js",
+  "/components/Footer": "pages/components/Footer.html",
+  "/components/Header": "pages/components/Header.html",
+  "/components/NyModal": "pages/components/NyModal.html",
+  "/components/modal": "pages/components/modal.html",
+  "/": "pages/index.html",
+  "/login": "pages/login.html",
   "/_error": "pages/_error.js",
-  "/": "pages/index.js"
+  "/404": "pages/404.html"
 }

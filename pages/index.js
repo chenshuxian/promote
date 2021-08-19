@@ -28,6 +28,8 @@ import {
   IconButton,
 } from "@material-ui/core";
 
+console.log(process.env.NODE_ENV);
+console.log(process.env.NEXT_PUBLIC_API_URL);
 const userUrl = "http://localhost:3000/api/user";
 const applyUrl = "http://localhost:3000/api/apply";
 
@@ -117,7 +119,7 @@ export default function Home() {
     };
     setID(event.target.value);
     const data = { api: "checkStatus", q: event.target.value };
-    post({ userUrl }, data)
+    post(process.env.NEXT_PUBLIC_API_USER_URL, data)
       .then((data) => {
         if (data.status >= 2) {
           setTitle(data.title);
@@ -135,7 +137,7 @@ export default function Home() {
   const checkName = (event) => {
     //console.log(event.target.value);
     const data = { api: "checkName", q: { name: event.target.value, id: id } };
-    post({ userUrl }, data)
+    post(process.env.NEXT_PUBLIC_API_USER_URL, data)
       .then((data) => {
         if (data.is_same) {
           setNameCheck(
@@ -273,7 +275,7 @@ export default function Home() {
   const handleSave = () => {
     setNyOpen(false);
     // formValues.bank_id;
-    post({ applyUrl }, formValues)
+    post("http://localhost:3000/api/apply", formValues)
       .then((data) => {
         setTitle(data.title);
         setContent(data.msg);
