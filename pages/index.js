@@ -275,7 +275,7 @@ export default function Home() {
   const handleSave = () => {
     setNyOpen(false);
     // formValues.bank_id;
-    post("http://localhost:3000/api/apply", formValues)
+    post(process.env.NEXT_PUBLIC_API_APPLY_URL, formValues)
       .then((data) => {
         setTitle(data.title);
         setContent(data.msg);
