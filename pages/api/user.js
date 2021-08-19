@@ -78,14 +78,27 @@ export default async function handler(req, res) {
           is_same = 0;
         }
 
-        const update = await prisma.apply.update({
-          where: {
-            id: q.id,
-          },
-          data: {
-            is_same_name: is_same,
-          },
-        });
+        if (q.id) {
+          const update = await prisma.apply.updateMany({
+            where: {
+              AND: [
+                {
+                  status: {
+                    lte: 1,
+                  },
+                },
+                {
+                  id: {
+                    equals: q.id,
+                  },
+                },
+              ],
+            },
+            data: {
+              is_same_name: is_same,
+            },
+          });
+        }
 
         return res.status(200).send({
           is_same,

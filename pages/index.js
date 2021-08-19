@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
 import { Form } from "react-final-form";
 import { TextField, Select, Checkboxes } from "mui-rff";
 import { makeStyles } from "@material-ui/core";
 import ImageSearchIcon from "@material-ui/icons/ImageSearch";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import CancelIcon from "@material-ui/icons/Cancel";
 import Header from "./components/Header";
@@ -16,6 +14,7 @@ import post from "../src/post";
 import Image from "next/image";
 import houseId from "../public/house_id.jpeg";
 import NyModal from "./components/NyModal";
+import validate from "./function/validate";
 
 import {
   Typography,
@@ -27,11 +26,6 @@ import {
   MenuItem,
   IconButton,
 } from "@material-ui/core";
-
-console.log(process.env.NODE_ENV);
-console.log(process.env.NEXT_PUBLIC_API_URL);
-const userUrl = "http://localhost:3000/api/user";
-const applyUrl = "http://localhost:3000/api/apply";
 
 const checkFields = [
   {
@@ -113,8 +107,8 @@ export default function Home() {
     const status = {
       0: "未申請",
       1: "審核中",
-      2: "審核通過",
-      3: "已撥款",
+      2: "審核通過, 資料不可進行修改，如需修改請與各地方戶政單位連絡",
+      3: "已撥款, 請至銀行帳戶查詢確認",
       99: "資格不符,請輸入正確的身份證",
     };
     setID(event.target.value);
@@ -158,45 +152,6 @@ export default function Home() {
       .catch((error) => console.error(error));
   };
 
-  async function validate(values) {
-    const errors = {};
-    if (!values.id) {
-      errors.id = "身份證不可為空";
-    } else if (!values.id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
-      errors.id = "身份證格式錯誤, 本國W123456789, 國外AB12345678";
-    }
-
-    if (!values.born) {
-      errors.born = "生日不可為空";
-    } else if (isNaN(values.born) || values.born.length !== 7) {
-      errors.born = "生日格式由3位數年份+2位月份+2位日期組成，如:0890102";
-    }
-    if (!values.bank_name) {
-      errors.bank_name = "銀行戶名不可為空";
-    }
-    if (!values.phone) {
-      errors.phone = "電話號碼不可為空";
-    }
-    if (!values.bank_id) {
-      errors.bank_id = "銀行機構代號不可為空";
-    }
-    if (!values.bank_account) {
-      errors.bank_account = "銀行帳號不可為空";
-    } else if (
-      isNaN(values.bank_account) ||
-      values.bank_account.length !== 24
-    ) {
-      errors.bank_account = "銀行帳號由24位數字組成";
-    }
-    if (!values.house_id) {
-      errors.house_id = "戶號不可為空";
-    } else if (!values.house_id.match("^[a-zA-Z]\\d{7}$")) {
-      errors.house_id = "戶號由英文字母為首+7位數字, 如: F1234567";
-    }
-
-    return errors;
-  }
-
   function handleCheckBox(event) {
     console.log("checkbox: " + event.target.checked);
     if (event.target.checked) setChecked("block");
@@ -226,8 +181,10 @@ export default function Home() {
     let obj = {};
     for (const [key, value] of Object.entries(values)) {
       console.log(`${key}: ${value}`);
-      obj = { name: idToText[key], value: value };
-      arr.push(obj);
+      if (key !== "notice1" && key !== "notice2") {
+        obj = { name: idToText[key], value: value };
+        arr.push(obj);
+      }
     }
     console.log(arr);
     return arr;
@@ -236,15 +193,24 @@ export default function Home() {
   // 申請處理確認
   // 打開新的提示框要求使用者確認
   const onSubmit = async (values) => {
+    // 去除申請明
+    // delete values.notice1;
+    // delete values.notice2;
     // 1. 彈出 NyModal
     let title = "個人資訊確認";
     let newValues = objToArr(values);
+    let today = new Date();
+    let y = today.getFullYear();
+    let m = today.getMonth();
+    let d = today.getDate();
+
     let content = (
       <Grid container spacing={2}>
         <Grid item>
           <Typography color="error">
             請確認所輸入資料完全正確，銀行帳戶確為本人所擁有，如因資料不全造成退匯，所衍生問題或法律責任由本人自行承擔。
           </Typography>
+          <Typography>申請時間 : {`${y} - ${m} - ${d}`}</Typography>
         </Grid>
         <Grid item>
           <Grid container direction="column" spacing={2}>
@@ -396,6 +362,34 @@ export default function Home() {
         />
       ),
     },
+    {
+      size: 12,
+      field: (
+        <Checkboxes
+          name="notice1"
+          formControlProps={{ margin: "none" }}
+          data={{
+            label:
+              "茲聲明本人以上所填個人資料俱確實無訛，如有不實，願負法律責任",
+            value: true,
+          }}
+        />
+      ),
+    },
+    {
+      size: 12,
+      field: (
+        <Checkboxes
+          name="notice2"
+          formControlProps={{ margin: "none" }}
+          data={{
+            label:
+              "同意提供此申請相關文件中所提供之個人資料，授權供縣府發放紓困金妥善使用",
+            value: true,
+          }}
+        />
+      ),
+    },
   ];
 
   return (
@@ -472,7 +466,11 @@ export default function Home() {
                       onSubmit={onSubmit}
                       checked={checked}
                       buttonDisable={buttonDisable}
-                      initialValues={{ bank_id: "005" }}
+                      initialValues={{
+                        bank_id: "005",
+                        notice1: true,
+                        notice2: true,
+                      }}
                       validate={validate}
                       render={({
                         handleSubmit,
@@ -485,29 +483,43 @@ export default function Home() {
                           <Paper style={{ padding: 16 }}>
                             <Grid container alignItems="flex-start" spacing={2}>
                               {formFields.map((item, idx) => (
-                                <Grid item xs={item.size} key={idx}>
+                                <Grid item xs={12} md={item.size} key={idx}>
                                   {item.field}
                                 </Grid>
                               ))}
-                              <Grid item style={{ marginTop: 16 }}>
-                                <Button
-                                  type="button"
-                                  variant="contained"
-                                  onClick={form.reset}
-                                  disabled={submitting || pristine}
-                                >
-                                  清除
-                                </Button>
+                              {/* <Grid item>
+                                <Typography color="error">
+                                  茲聲明本人以上所填個人資料俱確實無訛，如有不實，願負法律責任
+                                </Typography>
                               </Grid>
-                              <Grid item style={{ marginTop: 16 }}>
-                                <Button
-                                  variant="contained"
-                                  color="primary"
-                                  type="submit"
-                                  disabled={submitting || buttonDisable}
-                                >
-                                  送出
-                                </Button>
+                              <Grid item>
+                                <Typography color="error">
+                                  同意提供此申請相關文件中所提供之個人資料，授權供縣府發放紓困金妥善使用
+                                </Typography>
+                              </Grid> */}
+                              <Grid item>
+                                <Grid container spacing={1}>
+                                  <Grid item>
+                                    <Button
+                                      type="button"
+                                      variant="contained"
+                                      onClick={form.reset}
+                                      disabled={submitting || pristine}
+                                    >
+                                      清除
+                                    </Button>
+                                  </Grid>
+                                  <Grid item>
+                                    <Button
+                                      variant="contained"
+                                      color="primary"
+                                      type="submit"
+                                      disabled={submitting || buttonDisable}
+                                    >
+                                      送出
+                                    </Button>
+                                  </Grid>
+                                </Grid>
                               </Grid>
                             </Grid>
                           </Paper>
@@ -543,7 +555,7 @@ export default function Home() {
                         <Paper style={{ padding: 16 }}>
                           <Grid container alignItems="flex-start" spacing={2}>
                             {checkFields.map((item, idx) => (
-                              <Grid item xs={item.size} key={idx}>
+                              <Grid item xs={12} md={item.size} key={idx}>
                                 {item.field}
                               </Grid>
                             ))}

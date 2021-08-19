@@ -25,7 +25,7 @@ model apply {
   addr         String    @default("null") @db.VarChar(200)
   town         Int       @default(1)
   pay_date     Int       @default(0)
-  editoer      String    @default("null") @db.VarChar(45)
+  editor       String    @default("null") @db.VarChar(45)
   reason       Int       @default(1)
   relationship Int       @default(1)
   bank_name    String    @default("null") @db.VarChar(45)

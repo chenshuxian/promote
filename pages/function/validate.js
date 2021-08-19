@@ -1,0 +1,45 @@
+export default async function validate(values) {
+  const errors = {};
+  if (!values.id) {
+    errors.id = "身份證不可為空";
+  } else if (!values.id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
+    errors.id = "身份證格式錯誤, 本國W123456789, 國外AB12345678";
+  }
+
+  if (!values.notice1) {
+    errors.notice1 = "個人資料申明需要勾選";
+  }
+
+  if (!values.notice2) {
+    errors.notice2 = "個人資料提供使用需求需要勾選";
+  }
+
+  if (!values.born) {
+    errors.born = "生日不可為空";
+  } else if (isNaN(values.born) || values.born.length !== 7) {
+    errors.born = "生日格式由3位數年份+2位月份+2位日期組成，如:0890102";
+  }
+  if (!values.bank_name) {
+    errors.bank_name = "銀行戶名不可為空";
+  }
+  if (!values.phone) {
+    errors.phone = "電話號碼不可為空";
+  } else if (isNaN(values.phone)) {
+    errors.phone = "電話號碼只能為數字";
+  }
+  if (!values.bank_id) {
+    errors.bank_id = "銀行機構代號不可為空";
+  }
+  if (!values.bank_account) {
+    errors.bank_account = "銀行帳號不可為空";
+  } else if (isNaN(values.bank_account) || values.bank_account.length !== 24) {
+    errors.bank_account = "銀行帳號由24位數字組成";
+  }
+  if (!values.house_id) {
+    errors.house_id = "戶號不可為空";
+  } else if (!values.house_id.match("^[a-zA-Z]\\d{7}$")) {
+    errors.house_id = "戶號由英文字母為首+7位數字, 如: F1234567";
+  }
+
+  return errors;
+}
