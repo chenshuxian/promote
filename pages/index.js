@@ -14,7 +14,7 @@ import post from "../src/post";
 import Image from "next/image";
 import houseId from "../public/house_id.jpeg";
 import NyModal from "./components/NyModal";
-import validate from "./function/validate";
+import validate from "../function/validate";
 
 import {
   Typography,
