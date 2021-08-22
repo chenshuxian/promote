@@ -46,7 +46,7 @@ const checkFields = [
     field: (
       <TextField
         label="出生年月日"
-        name="chekc_born"
+        name="check_born"
         margin="none"
         required={true}
         placeholder="格式:0890813"
@@ -78,6 +78,7 @@ const useStyles = makeStyles({
 
 const checkSubmit = async (values) => {
   console.log(values);
+  
 };
 
 export default function Home() {
@@ -537,7 +538,6 @@ export default function Home() {
                 <Grid item xs={12} md={5}>
                   <Form
                     onSubmit={checkSubmit}
-                    validate={validate}
                     render={({
                       handleSubmit,
                       form,
