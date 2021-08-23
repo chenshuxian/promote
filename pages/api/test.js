@@ -6,7 +6,7 @@ const prisma = new PrismaClient({
 
 export default async function handler(req, res) {
   try {
-    const create = await prisma.test.create({
+    const g = await prisma.test.create({
       data: {
         name: "A test 1",
       },
