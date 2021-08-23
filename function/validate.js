@@ -1,6 +1,5 @@
-export default async function validate(values, bank_id) {
+export default async function validate(values, bank_len) {
   // console.log(`validate ${bank_id}`);
-  let bank_len = bank_id === "005" ? 12 : 14;
   const errors = {};
   if (!values.id) {
     errors.id = "身份證不可為空";

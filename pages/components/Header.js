@@ -6,7 +6,8 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import { Grid } from "@material-ui/core";
 import Image from "next/image";
-import icon from "../../public/icon.jpg";
+import icon from "../../public/newIcon.jpg";
+import Head from "next/head";
 import { blue, blueGrey } from "@material-ui/core/colors";
 
 const homeSection = [
@@ -45,7 +46,7 @@ const Header = () => {
         alignItems="center"
       >
         <Image src={icon} width={200} height={80}></Image>
-        <div style={{ display: "flex" }}>
+        {/* <div style={{ display: "flex" }}>
           {homeSection.map((item, index) => {
             return (
               <a key={index} href={"#" + item.id} className={classes.link}>
@@ -55,7 +56,10 @@ const Header = () => {
               </a>
             );
           })}
-        </div>
+        </div> */}
+        <Head>
+          <title>金門縣振興補助申請</title>
+        </Head>
       </Grid>
     </Paper>
   );

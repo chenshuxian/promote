@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import Head from "next/head";
 import { Form } from "react-final-form";
 import { TextField, Select, Checkboxes } from "mui-rff";
@@ -15,6 +14,8 @@ import Image from "next/image";
 import houseId from "../public/house_id.jpeg";
 import NyModal from "./components/NyModal";
 import validate from "../function/validate";
+import { STATUS } from "../function/common";
+import km from "../public/newIcon.jpg";
 
 import {
   Typography,
@@ -26,35 +27,6 @@ import {
   MenuItem,
   IconButton,
 } from "@material-ui/core";
-
-const checkFields = [
-  {
-    size: 12,
-    field: (
-      <TextField
-        label="身份證"
-        name="check_id"
-        margin="none"
-        required={true}
-        placeholder="w123456789"
-        variant="outlined"
-      />
-    ),
-  },
-  {
-    size: 12,
-    field: (
-      <TextField
-        label="出生年月日"
-        name="chekc_born"
-        margin="none"
-        required={true}
-        placeholder="格式:0890813"
-        variant="outlined"
-      />
-    ),
-  },
-];
 
 const useStyles = makeStyles({
   root: {
@@ -92,6 +64,7 @@ export default function Home() {
   const [id, setID] = useState("");
   const [formValues, setFormValues] = useState("");
   const [bank_id, setBank_id] = useState("005");
+  const [bank_len, setBank_len] = useState(12);
 
   const handleOpen = () => {
     setContent(<Image src={houseId} />);
@@ -105,20 +78,20 @@ export default function Home() {
   */
   const checkStatus = (event) => {
     //console.log(event.target.value);
-    const status = {
-      0: "未申請",
-      1: "審核中",
-      2: "審核通過, 資料不可進行修改，如需修改請與各地方戶政單位連絡",
-      3: "已撥款, 請至銀行帳戶查詢確認",
-      99: "資格不符,請輸入正確的身份證",
-    };
+    // const status = {
+    //   0: "未申請",
+    //   1: "審核中",
+    //   2: "審核通過, 資料不可進行修改，如需修改請與各地方戶政單位連絡",
+    //   3: "已撥款, 請至銀行帳戶查詢確認",
+    //   99: "資格不符,請輸入正確的身份證",
+    // };
     setID(event.target.value);
     const data = { api: "checkStatus", q: event.target.value };
     post(process.env.NEXT_PUBLIC_API_USER_URL, data)
       .then((data) => {
         if (data.status >= 2) {
           setTitle(data.title);
-          setContent(status[data.status]);
+          setContent(STATUS[data.status]);
           setButtonDisable(true);
           setOpen(true);
         } else {
@@ -152,12 +125,6 @@ export default function Home() {
       })
       .catch((error) => console.error(error));
   };
-
-  // function handleCheckBox(event) {
-  //   console.log("checkbox: " + event.target.checked);
-  //   if (event.target.checked) setChecked("block");
-  //   else setChecked("none");
-  // }
 
   const handleClose = () => {
     setOpen(false);
@@ -262,6 +229,9 @@ export default function Home() {
           required={true}
           placeholder="格式:F0890813"
           variant="outlined"
+          inputProps={{
+            maxLength: 8,
+          }}
         />
       ),
     },
@@ -289,6 +259,9 @@ export default function Home() {
           placeholder="w123456789"
           onBlur={checkStatus}
           variant="outlined"
+          inputProps={{
+            maxLength: 10,
+          }}
         />
       ),
     },
@@ -302,6 +275,9 @@ export default function Home() {
           required={true}
           placeholder="格式:0890813"
           variant="outlined"
+          inputProps={{
+            maxLength: 7,
+          }}
         />
       ),
     },
@@ -315,6 +291,9 @@ export default function Home() {
           required={true}
           placeholder="需提供正確電話"
           variant="outlined"
+          inputProps={{
+            maxLength: 10,
+          }}
         />
       ),
     },
@@ -337,14 +316,18 @@ export default function Home() {
       field: <Grid container>{nameCheck}</Grid>,
     },
     {
-      size: 12,
+      size: 4,
       field: (
         <Select
           name="bank_id"
           label="銀行機構代號"
           formControlProps={{ margin: "none" }}
           variant="outlined"
-          onClick={(event) => setBank_id(event.target.value)}
+          onClick={(event) => {
+            let len = event.target.value === "005" ? 12 : 14;
+            setBank_len(len);
+            setBank_id(event.target.value);
+          }}
         >
           <MenuItem value="005">005 土地銀行</MenuItem>
           <MenuItem value="700">700 郵局</MenuItem>
@@ -353,7 +336,7 @@ export default function Home() {
       ),
     },
     {
-      size: 12,
+      size: 8,
       field: (
         <TextField
           label="銀行帳號"
@@ -361,6 +344,9 @@ export default function Home() {
           margin="none"
           required={true}
           variant="outlined"
+          inputProps={{
+            maxLength: bank_len,
+          }}
         />
       ),
     },
@@ -412,9 +398,6 @@ export default function Home() {
               <title>金門縣振興補助申請</title>
             </Head>
           </Grid>
-          <Grid item>
-            <Typography variant="h2">金門縣線上振興補助申請平台</Typography>
-          </Grid>
           <Grid id="apply" item xs={12}>
             <Grid container spacing={4}>
               <Grid item xs={12}>
@@ -431,6 +414,9 @@ export default function Home() {
                       alignItems="center"
                       spacing={2}
                     >
+                      <Grid item xs={12}>
+                        <Image src={km} />
+                      </Grid>
                       <Grid item xs={10}>
                         <Typography variant="h6">
                           金門縣因應新冠疫情紓困金說明:{" "}
@@ -474,7 +460,7 @@ export default function Home() {
                         notice2: true,
                       }}
                       validate={(values) => {
-                        return validate(values, bank_id);
+                        return validate(values, bank_len);
                       }}
                       render={({
                         handleSubmit,
@@ -520,79 +506,6 @@ export default function Home() {
                         </form>
                       )}
                     />
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={12} className={classes.line}></Grid>
-          <Grid item xs={12}>
-            <Grid container spacing={4}>
-              <Grid item xs={12}>
-                <Typography id="check" variant="h4">
-                  補助查詢區
-                </Typography>
-              </Grid>
-              <Grid container justifyContent="space-around" alignItems="center">
-                <Grid item xs={12} md={5}>
-                  <Form
-                    onSubmit={checkSubmit}
-                    validate={validate}
-                    render={({
-                      handleSubmit,
-                      form,
-                      submitting,
-                      pristine,
-                      values,
-                    }) => (
-                      <form onSubmit={handleSubmit} noValidate>
-                        <Paper style={{ padding: 16 }}>
-                          <Grid container alignItems="flex-start" spacing={2}>
-                            {checkFields.map((item, idx) => (
-                              <Grid item xs={12} md={item.size} key={idx}>
-                                {item.field}
-                              </Grid>
-                            ))}
-                            <Grid item style={{ marginTop: 16 }}>
-                              <Button
-                                type="button"
-                                variant="contained"
-                                onClick={form.reset}
-                                disabled={submitting || pristine}
-                              >
-                                清除
-                              </Button>
-                            </Grid>
-                            <Grid item style={{ marginTop: 16 }}>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                type="submit"
-                                disabled={submitting}
-                              >
-                                查詢
-                              </Button>
-                            </Grid>
-                          </Grid>
-                          <pre>{JSON.stringify(values)}</pre>
-                        </Paper>
-                      </form>
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={false} md={6}>
-                  <Grid
-                    container
-                    direction="column"
-                    justifyContent="center"
-                    alignItems="center"
-                    spacing={2}
-                  >
-                    <Grid item xs={false} md={6}>
-                      <Typography variant="h6">
-                        請於查詢欄位中輸入查詢資訊
-                      </Typography>
-                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
