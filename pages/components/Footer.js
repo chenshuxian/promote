@@ -22,7 +22,7 @@ const Footer = () => {
     >
       <Typography variant="body2" color="textSecondary" align="center">
         {"Copyright © "}
-        金門縣民政處 {new Date().getFullYear()}
+        金門縣政府 {new Date().getFullYear()}
         {"."}
       </Typography>
     </Grid>
