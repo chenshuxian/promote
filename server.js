@@ -1,0 +1,33 @@
+// server.js
+const express = require("express");
+const next = require("next");
+const fs = require("fs");
+
+const port = parseInt(process.env.PORT, 10) || 3000;
+const dev = process.env.NODE_ENV !== "production";
+const app = next({ dev });
+const handle = app.getRequestHandler();
+
+const http = require("http");
+const https = require("https");
+
+var options = {
+  key: fs.readFileSync("./sslkey/private.key"),
+  ca: fs.readFileSync("./sslkey/ca_bundle.crt"),
+  cert: fs.readFileSync("./sslkey/certificate.crt"),
+};
+
+app.prepare().then(() => {
+  const app = express();
+
+  app.all("*", (req, res) => {
+    return handle(req, res);
+  });
+
+  var httpsServer = https.createServer(options, app);
+
+  httpsServer.listen(443, (err) => {
+    if (err) throw err;
+    console.log(`> Ready on http://localhost:${443}`);
+  });
+});
