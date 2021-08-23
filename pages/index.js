@@ -6,6 +6,8 @@ import { makeStyles } from "@material-ui/core";
 import ImageSearchIcon from "@material-ui/icons/ImageSearch";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import CancelIcon from "@material-ui/icons/Cancel";
+import SecurityIcon from "@material-ui/icons/Security";
+import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import TModal from "./components/modal.js";
@@ -13,6 +15,8 @@ import post from "../src/post";
 import Image from "next/image";
 import houseId from "../public/house_id.jpeg";
 import NyModal from "./components/NyModal";
+import PrivateModal from "./components/PrivateModal";
+import PersonalModal from "./components/PersonalModal";
 import validate from "../function/validate";
 import { STATUS } from "../function/common";
 import km from "../public/newIcon.jpg";
@@ -56,6 +60,8 @@ export default function Home() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [nyOpen, setNyOpen] = useState(false);
+  const [privateOpen, setPrivateOpen] = useState(false);
+  const [personalOpen, setPersonalOpen] = useState(false);
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [checked, setChecked] = useState("none");
@@ -63,7 +69,6 @@ export default function Home() {
   const [buttonDisable, setButtonDisable] = useState(false);
   const [id, setID] = useState("");
   const [formValues, setFormValues] = useState("");
-  const [bank_id, setBank_id] = useState("005");
   const [bank_len, setBank_len] = useState(12);
 
   const handleOpen = () => {
@@ -132,6 +137,14 @@ export default function Home() {
 
   const handleNyClose = () => {
     setNyOpen(false);
+  };
+
+  const handlePClose = () => {
+    setPrivateOpen(false);
+  };
+
+  const handlePersonalClose = () => {
+    setPersonalOpen(false);
   };
 
   // obj to arr
@@ -450,62 +463,98 @@ export default function Home() {
                     </Grid>
                   </Grid>
                   <Grid item xs={12} md={6}>
-                    <Form
-                      onSubmit={onSubmit}
-                      checked={checked}
-                      buttonDisable={buttonDisable}
-                      initialValues={{
-                        bank_id: "005",
-                        notice1: true,
-                        notice2: true,
-                      }}
-                      validate={(values) => {
-                        return validate(values, bank_len);
-                      }}
-                      render={({
-                        handleSubmit,
-                        form,
-                        submitting,
-                        pristine,
-                        values,
-                      }) => (
-                        <form onSubmit={handleSubmit} noValidate>
-                          <Paper style={{ padding: 16 }}>
-                            <Grid container alignItems="flex-start" spacing={2}>
-                              {formFields.map((item, idx) => (
-                                <Grid item xs={12} md={item.size} key={idx}>
-                                  {item.field}
-                                </Grid>
-                              ))}
-                              <Grid item>
-                                <Grid container spacing={1}>
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <Form
+                          onSubmit={onSubmit}
+                          checked={checked}
+                          buttonDisable={buttonDisable}
+                          initialValues={{
+                            bank_id: "005",
+                            notice1: true,
+                            notice2: true,
+                          }}
+                          validate={(values) => {
+                            return validate(values, bank_len);
+                          }}
+                          render={({
+                            handleSubmit,
+                            form,
+                            submitting,
+                            pristine,
+                            values,
+                          }) => (
+                            <form onSubmit={handleSubmit} noValidate>
+                              <Paper style={{ padding: 16 }}>
+                                <Grid
+                                  container
+                                  alignItems="flex-start"
+                                  spacing={2}
+                                >
+                                  {formFields.map((item, idx) => (
+                                    <Grid item xs={12} md={item.size} key={idx}>
+                                      {item.field}
+                                    </Grid>
+                                  ))}
                                   <Grid item>
-                                    <Button
-                                      type="button"
-                                      variant="contained"
-                                      onClick={form.reset}
-                                      disabled={submitting || pristine}
-                                    >
-                                      清除
-                                    </Button>
-                                  </Grid>
-                                  <Grid item>
-                                    <Button
-                                      variant="contained"
-                                      color="primary"
-                                      type="submit"
-                                      disabled={submitting || buttonDisable}
-                                    >
-                                      送出
-                                    </Button>
+                                    <Grid container spacing={1}>
+                                      <Grid item>
+                                        <Button
+                                          type="button"
+                                          variant="contained"
+                                          onClick={form.reset}
+                                          disabled={submitting || pristine}
+                                        >
+                                          清除
+                                        </Button>
+                                      </Grid>
+                                      <Grid item>
+                                        <Button
+                                          variant="contained"
+                                          color="primary"
+                                          type="submit"
+                                          disabled={submitting || buttonDisable}
+                                        >
+                                          送出
+                                        </Button>
+                                      </Grid>
+                                    </Grid>
                                   </Grid>
                                 </Grid>
-                              </Grid>
-                            </Grid>
-                          </Paper>
-                        </form>
-                      )}
-                    />
+                              </Paper>
+                            </form>
+                          )}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <Grid container spacing={2}>
+                          <Grid item>
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              startIcon={<SecurityIcon />}
+                              onClick={() => {
+                                setPrivateOpen(true);
+                              }}
+                            >
+                              隱私權聲明
+                            </Button>
+                          </Grid>
+                          <Grid item>
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              startIcon={<AccountBoxIcon />}
+                              onClick={() => {
+                                setPersonalOpen(true);
+                              }}
+                            >
+                              個資法告知義務容
+                            </Button>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
@@ -527,6 +576,8 @@ export default function Home() {
         content={content}
         title={title}
       />
+      <PrivateModal handleClose={handlePClose} open={privateOpen} />
+      <PersonalModal handleClose={handlePersonalClose} open={personalOpen} />
     </Grid>
   );
 }

@@ -26,8 +26,8 @@ app.prepare().then(() => {
 
   var httpsServer = https.createServer(options, app);
 
-  httpsServer.listen(443, (err) => {
+  httpsServer.listen(8443, (err) => {
     if (err) throw err;
-    console.log(`> Ready on http://localhost:${443}`);
+    console.log(`> Ready on http://localhost:${8443}`);
   });
 });
