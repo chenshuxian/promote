@@ -86,7 +86,8 @@ export default async function handler(req, res) {
             let name = hidden(newUser.name, 1, endLen);
             data.name = name;
 
-            if (newUser.status > 1) {
+            //只有大於1審核中的狀態才返回銀行帳號
+            if (newUser.status >= 1) {
               let bank_account = hidden(newUser.bank_account, 3, 3);
               data.bank_account = bank_account;
             }

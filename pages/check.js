@@ -98,11 +98,10 @@ export default function Home() {
 
     post(process.env.NEXT_PUBLIC_API_USER_URL, data)
       .then((data) => {
-        console.log(data);
+        console.log(data.data.bank_account);
         if (data) {
           setTitle(data.title);
           setOpen(true);
-
           let content = (
             <>
               <Grid
@@ -116,7 +115,11 @@ export default function Home() {
                 <Grid item>
                   <Typography>申請人進度: {STATUS[data.status]}</Typography>
                   <Typography>申請人姓名: {data.data.name}</Typography>
-                  <Typography>申請人帳號: {data.data.bank_account}</Typography>
+                  {data.data.bank_account ? (
+                    <Typography>
+                      申請人帳號: {data.data.bank_account}
+                    </Typography>
+                  ) : null}
                 </Grid>
               </Grid>
             </>
