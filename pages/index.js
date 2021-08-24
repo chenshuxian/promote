@@ -339,7 +339,7 @@ export default function Home() {
           onClick={(event) => {
             let len = event.target.value === "005" ? 12 : 14;
             setBank_len(len);
-            setBank_id(event.target.value);
+            // setBank_id(event.target.value);
           }}
         >
           <MenuItem value="005">005 土地銀行</MenuItem>

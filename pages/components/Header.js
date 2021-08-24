@@ -8,7 +8,7 @@ import { Grid } from "@material-ui/core";
 import Image from "next/image";
 import icon from "../../public/newIcon.jpg";
 import Head from "next/head";
-import { blue, blueGrey } from "@material-ui/core/colors";
+import { blue } from "@material-ui/core/colors";
 
 const homeSection = [
   { id: "apply", title: "申請區" },
