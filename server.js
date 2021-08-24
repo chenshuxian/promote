@@ -12,8 +12,8 @@ const http = require("http");
 const https = require("https");
 
 var options = {
-  key: fs.readFileSync("./sslkey/final/ssl/5000.kinmen.gov.tw.key"),
-  cert: fs.readFileSync("./sslkey/final/ssl/5000.kinmen.gov.tw.crt"),
+  key: fs.readFileSync("./sslkey/final/5000.kinmen.gov.tw.key"),
+  cert: fs.readFileSync("./sslkey/final/5000.kinmen.gov.tw.crt"),
 };
 
 app.prepare().then(() => {
