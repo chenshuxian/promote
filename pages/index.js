@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Form } from "react-final-form";
+import Head from "next/head";
 import { TextField, Select, Checkboxes } from "mui-rff";
 import { makeStyles } from "@material-ui/core";
 import ImageSearchIcon from "@material-ui/icons/ImageSearch";
@@ -73,9 +74,9 @@ const useStyles = makeStyles({
 const validate = (values) => {
   const errors = {};
   if (!values.id) {
-    errors.id = "身份證不可為空";
+    errors.id = "身分證不可為空";
   } else if (!values.id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
-    errors.id = "身份證格式錯誤, 本國W123456789, 國外AB12345678";
+    errors.id = "身分證格式錯誤, 本國W123456789, 國外AB12345678";
   }
 
   if (!values.born) {
