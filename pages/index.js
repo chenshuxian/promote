@@ -24,7 +24,7 @@ const checkFields = [
     size: 12,
     field: (
       <Typography variant="h5" color="secondary">
-        當前僅提供查詢服務，線上申請服將將於9/6正式上線
+        當前僅提供查詢服務，線上申請服將於9/6正式上線
       </Typography>
     ),
   },
