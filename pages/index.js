@@ -31,7 +31,7 @@ const checkFields = [
     size: 12,
     field: (
       <TextField
-        label="身份證"
+        label="身分證"
         name="id"
         margin="none"
         required={true}
