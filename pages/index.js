@@ -199,7 +199,7 @@ export default function Home() {
                           )
                         }
                       >
-                        相關申請表格檔案
+                        相關申辦規定及表格下載
                       </Button>
                     </Grid>
                     <Grid item style={{ marginTop: 16 }}>
