@@ -61,7 +61,7 @@ export default function addForm(props) {
   return (
     <>
       <Head>
-        <title>金門縣振興補助申請</title>
+        <title>金門縣110年紓困申請</title>
       </Head>
       <Grid
         container

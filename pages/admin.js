@@ -192,11 +192,6 @@ export default function Home() {
           spacing={8}
         >
           <Grid item>
-            <Head>
-              <title>金門縣振興補助申請</title>
-            </Head>
-          </Grid>
-          <Grid item>
             <Typography variant="h2">金門縣線上振興補助申請平台</Typography>
           </Grid>
           <Grid id="apply" item xs={12}>

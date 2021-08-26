@@ -13,7 +13,7 @@ const https = require("https");
 
 var options = {
   key: fs.readFileSync("./sslkey/final/5000.kinmen.gov.tw.key"),
-  cert: fs.readFileSync("./sslkey/final/5000.kinmen.gov.tw.crt"),
+  cert: fs.readFileSync("./sslkey/final/5000.kinmen.gov.tw.chained.crt"),
 };
 
 app.prepare().then(() => {
