@@ -15,6 +15,7 @@ import Image from "next/image";
 import km from "../public/newIcon.jpg";
 import { STATUS, STATUSICON } from "../function/common";
 import DescriptionIcon from "@material-ui/icons/Description";
+import HelpIcon from "@material-ui/icons/Help";
 
 import { Typography, Paper, Grid, Button } from "@material-ui/core";
 
@@ -199,6 +200,21 @@ export default function Home() {
                         }
                       >
                         相關申請表格檔案
+                      </Button>
+                    </Grid>
+                    <Grid item style={{ marginTop: 16 }}>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<HelpIcon />}
+                        onClick={() =>
+                          window.open(
+                            "https://ws.kinmen.gov.tw/Download.ashx?u=LzAwMS9VcGxvYWQvMzA1L3JlbGZpbGUvMTE5NTkvNzA2MzQzLzU5M2IwZDhiLTg0ZjYtNDRlMS1hZTVlLWM5M2JhOWFkYjA0Ni5wZGY%3D&n=5ZWP6IiH562ULnBkZg%3D%3D",
+                            "_blank"
+                          )
+                        }
+                      >
+                        {`Q & A `}
                       </Button>
                     </Grid>
                   </Grid>
