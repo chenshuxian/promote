@@ -13,11 +13,19 @@ import post from "../src/post";
 import Image from "next/image";
 import km from "../public/newIcon.jpg";
 import { STATUS, STATUSICON } from "../function/common";
+import DescriptionIcon from "@material-ui/icons/Description";
 
 import { Typography, Paper, Grid, Button } from "@material-ui/core";
-import { DataUsageRounded } from "@material-ui/icons";
 
 const checkFields = [
+  {
+    size: 12,
+    field: (
+      <Typography variant="h5" color="secondary">
+        當前僅提供查詢服務，線上申請服將將於9/6正式上線
+      </Typography>
+    ),
+  },
   {
     size: 12,
     field: (
@@ -145,7 +153,58 @@ export default function Home() {
           <Image src={km} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <Typography variant="h3">服務尚未啟動，敬請期待</Typography>
+          <Form
+            onSubmit={checkSubmit}
+            validate={validate}
+            render={({ handleSubmit, form, submitting, pristine, values }) => (
+              <form onSubmit={handleSubmit} noValidate>
+                <Paper style={{ padding: 16 }}>
+                  <Grid container alignItems="flex-start" spacing={2}>
+                    {checkFields.map((item, idx) => (
+                      <Grid item xs={12} md={item.size} key={idx}>
+                        {item.field}
+                      </Grid>
+                    ))}
+                    <Grid item style={{ marginTop: 16 }}>
+                      <Button
+                        type="button"
+                        variant="contained"
+                        onClick={form.reset}
+                        disabled={submitting || pristine}
+                      >
+                        清除
+                      </Button>
+                    </Grid>
+                    <Grid item style={{ marginTop: 16 }}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                        disabled={submitting}
+                      >
+                        查詢
+                      </Button>
+                    </Grid>
+                    <Grid item style={{ marginTop: 16 }}>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<DescriptionIcon />}
+                        onClick={() =>
+                          window.open(
+                            "https://www.kinmen.gov.tw/News_Content.aspx?n=1BC6B0D9638A6EE2&sms=A2C62D68901B977C&s=0560AE4B3861D97C",
+                            "_blank"
+                          )
+                        }
+                      >
+                        相關申請表格檔案
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </form>
+            )}
+          />
         </Grid>
       </Grid>
       <Footer />
