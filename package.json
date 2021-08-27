@@ -26,10 +26,12 @@
     "ip-to-int": "^0.3.1",
     "mui-rff": "^3.0.10",
     "next": "11.1.0",
+    "next-iron-session": "^4.2.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-final-form": "^6.5.3",
-    "sharp": "^0.29.0"
+    "sharp": "^0.29.0",
+    "swr": "^0.5.6"
   },
   "devDependencies": {
     "babel-plugin-styled-components": "^1.13.2",
