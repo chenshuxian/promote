@@ -86,7 +86,7 @@ export default function Home() {
     // const status = {
     //   0: "未申請",
     //   1: "審核中",
-    //   2: "審核通過, 資料不可進行修改，如需修改請與各地方戶政單位連絡",
+    //   2: "審核通過, 資料不可進行修改，如需修改請與各地方民政單位連絡",
     //   3: "已撥款, 請至銀行帳戶查詢確認",
     //   99: "資格不符,請輸入正確的身分證",
     // };
@@ -157,6 +157,7 @@ export default function Home() {
       phone: "手機號碼",
       bank_account: "銀行帳號",
       bank_name: "銀行戶名",
+      email: "電子郵件",
     };
     let arr = [];
     let obj = {};
@@ -191,7 +192,7 @@ export default function Home() {
           <Typography color="error">
             請確認所輸入資料完全正確，銀行帳戶確為本人所擁有，如因資料不全造成退匯，所衍生問題或法律責任由本人自行承擔。
           </Typography>
-          <Typography>申請時間 : {`${y} - ${m} - ${d}`}</Typography>
+          <Typography>申請時間 : {`${y} - ${m + 1} - ${d}`}</Typography>
         </Grid>
         <Grid item>
           <Grid container direction="column" spacing={2}>
@@ -447,7 +448,7 @@ export default function Home() {
                           1.
                           原則普發，每人5000元，存入申請人個人帳號，110年7月20日前設藉之全體縣民及取得居留證之外配皆有。
                         </Typography>
-                        <Typography>2. 設藉於戶政所及通緝犯不發。</Typography>
+                        <Typography>2. 設藉於民政所及通緝犯不發。</Typography>
                         <Typography>3. 採申請制 :</Typography>
                         <Typography className={classes.indent}>
                           3.1
