@@ -15,7 +15,7 @@ export default function adminField(setBank_len, bank_len, name, born, profile) {
       md: 4,
       field: (
         <TextField
-          label="申請人身份證"
+          label="申請人身分證"
           name="id"
           margin="none"
           required={true}
@@ -97,7 +97,7 @@ export default function adminField(setBank_len, bank_len, name, born, profile) {
       md: 6,
       field: (
         <TextField
-          label="代為申請人身份證"
+          label="代為申請人身分證"
           name="parent_id"
           margin="none"
           placeholder="w123456789"

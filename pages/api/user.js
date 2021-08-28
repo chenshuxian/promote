@@ -1,6 +1,6 @@
 import { NoteTwoTone } from "@material-ui/icons";
 import { PrismaClient } from "@prisma/client";
-import { DATE } from "../../function/common";
+import { DATE, GETIP } from "../../function/common";
 const prisma = new PrismaClient();
 
 let hidden = function (str, frontLen, endLen) {
@@ -12,11 +12,21 @@ let hidden = function (str, frontLen, endLen) {
   return str.substring(0, frontLen) + xing + str.substring(str.length - endLen);
 };
 
+const town = {
+  1: "jc",
+  2: "jh",
+  3: "js",
+  4: "jn",
+  5: "lu",
+  6: "wq",
+};
+
 export default async function handler(req, res) {
   const q = req.body.q;
   const api = req.body.api;
   const editor = req.body.editor;
   let status = 99;
+  req.body.ip = GETIP(req);
 
   if (req.method === "POST") {
     switch (api) {
@@ -44,7 +54,7 @@ export default async function handler(req, res) {
           if (err.code === "P2002") {
             return res.status(400).json({
               title: "申請失敗",
-              msg: "此身份證已經被申請，請確認輸入是否有誤",
+              msg: "此身分證已經被申請，請確認輸入是否有誤",
             });
           }
           return res.status(400).send("建檔失敗");
@@ -107,7 +117,7 @@ export default async function handler(req, res) {
           if (err.code === "P2002") {
             return res.status(400).json({
               title: "申請失敗",
-              msg: "此身份證已經被申請，請確認輸入是否有誤",
+              msg: "此身分證已經被申請，請確認輸入是否有誤",
             });
           }
           return res.status(400).send("建檔失敗");
@@ -228,8 +238,12 @@ export default async function handler(req, res) {
       // 管理端上傳狀態都為2，已審核
       case "addUserFromAdmin": {
         console.log(DATE());
+        let bankTable = `${town[q.town]}_${q.bank_id}`;
+        console.log("user api bankTable: " + bankTable);
+
+        // 總表更新
         try {
-          const user = await prisma.apply.update({
+          const user = await prisma["apply"].update({
             where: {
               id: q.id,
             },
@@ -244,16 +258,29 @@ export default async function handler(req, res) {
               reason: parseInt(q.reason),
               relationship: parseInt(q.relationship),
               update_time: DATE(),
+              ip: req.body.ip,
             },
           });
 
-          console.log(`update ${user}`);
+          // 更新各別帳戶資料表
+          const bank = await prisma[bankTable].create({
+            data: {
+              apply_id: q.id,
+              apply_name: q.name,
+              bank_account: q.bank_account,
+              parent_id: q.parent_id,
+              parent_name: q.parent_name,
+            },
+          });
+
+          console.log(`update ${JSON.stringify(bank)}`);
+
           let have = Object.keys(user).length;
           // 戶名和申請人相同
           if (have) {
-            return res.status(200).send({
-              msg: "ok",
-              user,
+            return res.status(200).json({
+              msg: "資料審核成功",
+              title: "紙本用戶資料審核",
             });
           }
         } catch (err) {
@@ -267,7 +294,7 @@ export default async function handler(req, res) {
       }
 
       default:
-        console.log(`Sorry, we are out of ${expr}.`);
+        console.log(`Sorry, we are out of.`);
     }
   } else {
     res.status(200).json({ name: "NOT POST" });
