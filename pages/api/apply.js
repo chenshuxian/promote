@@ -35,9 +35,17 @@ export default async function handler(req, res) {
   if (req.method === "POST") {
     // 新增申請資料
     let ip =
-      req.connection.remoteAddress === "::1"
-        ? "127.0.0.1"
-        : req.connection.remoteAddress;
+      req.headers["x-forwarded-for"] ||
+      req.ip ||
+      req.connection.remoteAddress ||
+      req.socket.remoteAddress ||
+      req.connection.socket.remoteAddress ||
+      "";
+    if (ip.split(",").length > 0) {
+      ip = ip.split(",")[0];
+    }
+    // ipv6 取得ip
+    ip = ip.substr(ip.lastIndexOf(":") + 1, ip.length);
     console.log("apply :" + ip);
     req.body.ip = parseInt(ipInt(ip).toInt());
 
