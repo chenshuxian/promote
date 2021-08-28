@@ -34,7 +34,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Header = () => {
+const Header = (props) => {
   const classes = useStyles();
 
   return (
@@ -46,6 +46,7 @@ const Header = () => {
         alignItems="center"
       >
         <Image src={icon} width={200} height={80}></Image>
+        {props.headerButton}
         {/* <div style={{ display: "flex" }}>
           {homeSection.map((item, index) => {
             return (

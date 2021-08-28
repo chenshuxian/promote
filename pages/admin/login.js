@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,6 +12,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import Image from "next/image";
 import icon from "../../public/newIcon.jpg";
 import { blue } from "@material-ui/core/colors";
+import postData from "../../src/post";
+import FixPwModal from "../components/FixPwModal";
+import useUser from "../../lib/useUser";
+import Router from "next/router";
+import { AlternateEmail } from "@material-ui/icons";
 
 function Copyright() {
   return (
@@ -52,8 +57,57 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignInSide() {
-  const classes = useStyles();
+  // const { mutateUser } = useUser({
+  //   redirectTo: "/admin/addForm",
+  //   redirectIfFound: true,
+  // });
+  const { user } = useUser({});
 
+  // 非首次登入
+  console.log("loginPage: " + user);
+  if (user && user.isLoggedIn) {
+    if (!user.user.is_fix_pw) {
+      //console.log("userisifx");
+      Router.push("/admin/addForm");
+    }
+  }
+
+  const classes = useStyles();
+  const [open, setOpen] = useState(false);
+  const [id, setId] = useState("");
+
+  const onFixPw = (values) => {
+    let data = { api: "fixPw", q: { id: id, pw: values.pw1 } };
+    postData(process.env.NEXT_PUBLIC_API_LOGIN_URL, data)
+      .then((data) => {
+        setOpen(false);
+        Router.push("/admin/addForm");
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const onSubmit = (event) => {
+    let id = document.getElementsByName("id")[0].value;
+    let pw = document.getElementsByName("password")[0].value;
+
+    let data = { api: "login", q: { id, pw } };
+    postData(process.env.NEXT_PUBLIC_API_LOGIN_URL, data)
+      .then((data) => {
+        if (data.fail) {
+          alert(data.msg);
+        }
+
+        if (data[0].is_fix_pw) {
+          //密碼修改
+          //打開修改密碼視窗
+          setId(data[0].id);
+          setOpen(true);
+        } else {
+          Router.push("/admin/addForm");
+        }
+      })
+      .catch((error) => console.error(error));
+  };
   return (
     <Grid container component="main" className={classes.root} spacing={1}>
       <CssBaseline />
@@ -87,11 +141,11 @@ export default function SignInSide() {
               type="password"
             />
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={onSubmit}
             >
               登入
             </Button>
@@ -101,6 +155,7 @@ export default function SignInSide() {
           </form>
         </div>
       </Grid>
+      <FixPwModal open={open} onFixPw={onFixPw} id={id} />
     </Grid>
   );
 }

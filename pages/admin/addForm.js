@@ -1,21 +1,29 @@
 import React, { useState } from "react";
 import Head from "next/dist/shared/lib/head";
 import { makeStyles } from "@material-ui/core/styles";
-import { Paper, Grid, Button } from "@material-ui/core";
+import { Paper, Grid, Button, Typography } from "@material-ui/core";
 import { Form } from "react-final-form";
-import Image from "next/image";
-import icon from "../../public/newIcon.jpg";
 import { adminValidate } from "../../function/validate";
-import PropTypes from "prop-types";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import useScrollTrigger from "@material-ui/core/useScrollTrigger";
-import { blue } from "@material-ui/core/colors";
 import field from "../../function/field";
 import Footer from "../components/Footer";
+import postData from "../../src/post";
+import { STATUS } from "../../function/common";
+import CancelIcon from "@material-ui/icons/Cancel";
+import TModal from "../components/modal";
+import useUser from "../../lib/useUser";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import Header from "../components/Header";
+import IconButton from "@material-ui/core/IconButton";
+import Router from "next/router";
 
 const onSubmit = (values) => {
   console.log(values);
+  const data = { api: "addUserFromAdmin", editor: "jacky", q: values };
+  postData(process.env.NEXT_PUBLIC_API_USER_URL, data)
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => console.error(error));
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -24,45 +32,86 @@ const useStyles = makeStyles((theme) => ({
     width: "100vw",
   },
   header: {
-    backgroundColor: blue[100],
+    marginTop: 90,
   },
+  appbar: { flexGrow: 1 },
+  title: { flexGrow: 1 },
 }));
 
-function ElevationScroll(props) {
-  const { children, window } = props;
-  // Note that you normally won't need to set the window ref as useScrollTrigger
-  // will default to window.
-  // This is only being set here because the demo is in an iframe.
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 0,
-    target: window ? window() : undefined,
-  });
-
-  return React.cloneElement(children, {
-    elevation: trigger ? 4 : 0,
-  });
-}
-
-ElevationScroll.propTypes = {
-  children: PropTypes.element.isRequired,
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  window: PropTypes.func,
+const logout = () => {
+  postData("/api/logout")
+    .then((data) => {
+      if (!data.isisLoggedIn) {
+        Router.push("/admin/login");
+      }
+    })
+    .catch((error) => console.error(error));
 };
 
 export default function addForm(props) {
+  const { user } = useUser({ redirectTo: "/admin/login" });
+  // console.log(user);
+
   const classes = useStyles();
   const [bank_len, setBank_len] = useState(12);
-  const formFields = field(setBank_len, bank_len);
+  const [name, setName] = useState("");
+  const [born, setBorn] = useState("");
+  const [open, setOpen] = useState(false);
+  const [content, setContent] = useState("");
+  const [buttonDisable, setButtonDisable] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const profile = (event) => {
+    const data = { api: "getUserProfile", q: { id: event.target.value } };
+    postData(process.env.NEXT_PUBLIC_API_USER_URL, data)
+      .then((data) => {
+        if (data.status === 0) {
+          // 未申請
+          setBorn(data.born);
+          setName(data.name);
+          setButtonDisable(false);
+        } else {
+          setOpen(true);
+          setButtonDisable(true);
+          let content = (
+            <>
+              <Grid
+                container
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
+                spacing={2}
+              >
+                <Grid item>
+                  <CancelIcon color="secondary" style={{ fontSize: 50 }} />
+                </Grid>
+                <Grid item>
+                  <Typography>申請人為未申請狀態才可進行紙本申請</Typography>
+                  {data.status == 99 ? (
+                    <Typography>{STATUS[data.status]}</Typography>
+                  ) : (
+                    <>
+                      <Typography>申請人進度: {STATUS[data.status]}</Typography>
+                      <Typography>申請人姓名: {data.name}</Typography>
+                      <Typography>申請人生日: {data.born}</Typography>
+                    </>
+                  )}
+                </Grid>
+              </Grid>
+            </>
+          );
+          setContent(content);
+        }
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const formFields = field(setBank_len, bank_len, name, born, profile);
 
   return (
     <>
-      <Head>
-        <title>金門縣110年紓困申請</title>
-      </Head>
       <Grid
         container
         justifyContent="center"
@@ -73,22 +122,23 @@ export default function addForm(props) {
         spacing={2}
       >
         <Grid item xs={12}>
-          <ElevationScroll {...props}>
-            <AppBar className={classes.header}>
-              <Toolbar>
-                <Image src={icon} width={200} height={80} />
-              </Toolbar>
-            </AppBar>
-          </ElevationScroll>
+          <Header
+            headerButton={
+              <IconButton onClick={logout}>
+                <ExitToAppIcon fontSize="large" />
+              </IconButton>
+            }
+          />
         </Grid>
-        <Grid item md={6} xs={12}>
+        <Grid item md={6} xs={12} className={classes.header}>
           <Form
             onSubmit={onSubmit}
             initialValues={{
               bank_id: "005",
               relationship: "1",
-              reason: "1",
+              reason: "0",
             }}
+            buttonDisable={buttonDisable}
             validate={(values) => {
               return adminValidate(values, bank_len);
             }}
@@ -116,7 +166,7 @@ export default function addForm(props) {
                         variant="contained"
                         color="primary"
                         type="submit"
-                        disabled={submitting}
+                        disabled={submitting || buttonDisable}
                       >
                         送出
                       </Button>
@@ -127,8 +177,15 @@ export default function addForm(props) {
             )}
           />
         </Grid>
+        <Footer />
       </Grid>
-      <Footer />
+
+      <TModal
+        handleClose={handleClose}
+        open={open}
+        content={content}
+        title="申請人資料核驗"
+      />
     </>
   );
 }

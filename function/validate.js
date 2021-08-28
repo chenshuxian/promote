@@ -46,6 +46,15 @@ export default async function validate(values, bank_len) {
     errors.house_id = "戶號由英文字母為首+7位數字, 如: F1234567";
   }
 
+  if (values.email) {
+    var emailRule =
+      /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
+
+    if (values.email.search(emailRule) == -1) {
+      errors.email = "email錯誤: ex@gmail.com";
+    }
+  }
+
   return errors;
 }
 
@@ -58,21 +67,12 @@ export async function adminValidate(values, bank_len) {
     errors.id = "身份證格式錯誤, 本國W123456789, 國外AB12345678";
   }
 
-  if (!values.parent_id) {
-    errors.parent_id = "身份證不可為空";
-  } else if (!values.parent_id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
-    errors.parent_id = "身份證格式錯誤, 本國W123456789, 國外AB12345678";
+  if (values.parent_id) {
+    if (!values.parent_id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
+      errors.parent_id = "身份證格式錯誤, 本國W123456789, 國外AB12345678";
+    }
   }
 
-  if (!values.parent_name) {
-    errors.parent_name = "代為申請人不可為空";
-  }
-
-  if (!values.born) {
-    errors.born = "生日不可為空";
-  } else if (isNaN(values.born) || values.born.length !== 7) {
-    errors.born = "生日格式由3位數年份+2位月份+2位日期組成，如:0890102";
-  }
   if (!values.phone) {
     errors.phone = "電話號碼不可為空";
   } else if (isNaN(values.phone)) {

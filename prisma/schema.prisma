@@ -16,7 +16,7 @@ model apply {
   email        String?   @db.VarChar(100)
   parent_id    String?   @db.VarChar(45)
   parent_name  String    @default("null") @db.VarChar(45)
-  bank_id      String    @default("700") @db.VarChar(10)
+  bank_id      String    @default("700") @db.VarChar(45)
   bank_name    String    @default("null") @db.VarChar(45)
   bank_account String    @default("0") @db.VarChar(45)
   status       Int       @default(0)
@@ -36,16 +36,18 @@ model apply {
 }
 
 model users {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @db.VarChar(45)
   name        String    @db.VarChar(45)
-  password    String    @default("12345678") @db.VarChar(45)
+  password    String    @default("5000") @db.VarChar(45)
   town        String?   @db.VarChar(45)
   create_time DateTime  @default(now()) @db.Timestamp(0)
   update_time DateTime? @db.Timestamp(0)
   is_delete   Int       @default(0)
+  is_fix_pw   Int?      @default(1)
+  roles       Int?      @default(1)
 }
 
 model test {
   id   Int    @id @default(autoincrement())
-  name String @default("null") @db.VarChar(45)
+  name String @db.VarChar(45)
 }

@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { PrismaClient, PrismaErrors } from "@prisma/client";
-// import { check } from "prettier";
+import { DATE } from "../../function/common";
 const ipInt = require("ip-to-int");
 const prisma = new PrismaClient({
   errorFormat: "minimal",
@@ -41,7 +41,7 @@ export default async function handler(req, res) {
     req.body.ip = parseInt(ipInt(ip).toInt());
 
     let title = "申請成功";
-    let msg = "已完成申請留程，靜待後續審核";
+    let msg = "已完成申請流程，靜待後續審核";
     let errMsg;
     let id = req.body.id;
     let house_id = req.body.house_id;
@@ -79,6 +79,9 @@ export default async function handler(req, res) {
             bank_id: req.body.bank_id,
             bank_name: req.body.bank_name,
             phone: req.body.phone,
+            email: req.body.email,
+            ip: req.body.ip,
+            update_time: DATE(),
           },
         });
 
@@ -91,7 +94,7 @@ export default async function handler(req, res) {
         if (err.code === "P2002") {
           return res.status(400).json({
             title: "申請失敗",
-            msg: "此身份證已經被申請，請確認輸入是否有誤",
+            msg: "此身分證已經被申請，請確認輸入是否有誤",
           });
         }
         return res.status(400).send("建檔失敗");

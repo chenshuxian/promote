@@ -3,7 +3,7 @@ import { Paper, Grid, Button, MenuItem } from "@material-ui/core";
 import Image from "next/image";
 import icon from "../public/newIcon.jpg";
 
-export default function adminField(setBank_len, bank_len) {
+export default function adminField(setBank_len, bank_len, name, born, profile) {
   return [
     {
       size: 12,
@@ -12,7 +12,7 @@ export default function adminField(setBank_len, bank_len) {
     },
     {
       size: 12,
-      md: 6,
+      md: 4,
       field: (
         <TextField
           label="申請人身份證"
@@ -21,6 +21,7 @@ export default function adminField(setBank_len, bank_len) {
           required={true}
           placeholder="w123456789"
           variant="outlined"
+          onBlur={profile}
           inputProps={{
             maxLength: 10,
           }}
@@ -29,64 +30,31 @@ export default function adminField(setBank_len, bank_len) {
     },
     {
       size: 12,
-      md: 6,
+      md: 4,
+      field: (
+        <TextField
+          label="姓名"
+          name="name"
+          margin="none"
+          placeholder="由系統自動帶入"
+          variant="outlined"
+          value={name}
+          disabled
+        />
+      ),
+    },
+    {
+      size: 12,
+      md: 4,
       field: (
         <TextField
           label="出生年月日"
           name="born"
           margin="none"
-          required={true}
-          placeholder="格式:0890813"
+          placeholder="由系統自動帶入"
           variant="outlined"
-          inputProps={{
-            maxLength: 7,
-          }}
-        />
-      ),
-    },
-    {
-      size: 12,
-      md: 6,
-      field: (
-        <TextField
-          label="代為申請人身份證"
-          name="parent_id"
-          margin="none"
-          required={true}
-          placeholder="w123456789"
-          variant="outlined"
-          inputProps={{
-            maxLength: 10,
-          }}
-        />
-      ),
-    },
-    {
-      size: 12,
-      md: 6,
-      field: (
-        <TextField
-          label="代為申請人姓名"
-          name="parent_name"
-          margin="none"
-          required={true}
-          variant="outlined"
-        />
-      ),
-    },
-    {
-      size: 12,
-      md: 6,
-      field: (
-        <TextField
-          label="代為申請人手機"
-          name="phone"
-          margin="none"
-          required={true}
-          variant="outlined"
-          inputProps={{
-            maxLength: 10,
-          }}
+          value={born}
+          disabled
         />
       ),
     },
@@ -117,12 +85,58 @@ export default function adminField(setBank_len, bank_len) {
           formControlProps={{ margin: "none" }}
           variant="outlined"
         >
+          <MenuItem value="0"></MenuItem>
           <MenuItem value="1">未成年</MenuItem>
           <MenuItem value="2">警示帳戶</MenuItem>
           <MenuItem value="3">凍結帳戶</MenuItem>
         </Select>
       ),
     },
+    {
+      size: 12,
+      md: 6,
+      field: (
+        <TextField
+          label="代為申請人身份證"
+          name="parent_id"
+          margin="none"
+          placeholder="w123456789"
+          variant="outlined"
+          inputProps={{
+            maxLength: 10,
+          }}
+        />
+      ),
+    },
+    {
+      size: 12,
+      md: 6,
+      field: (
+        <TextField
+          label="代為申請人姓名"
+          name="parent_name"
+          margin="none"
+          variant="outlined"
+        />
+      ),
+    },
+    {
+      size: 12,
+      md: 6,
+      field: (
+        <TextField
+          label="代為申請人手機"
+          name="phone"
+          margin="none"
+          required={true}
+          variant="outlined"
+          inputProps={{
+            maxLength: 10,
+          }}
+        />
+      ),
+    },
+
     {
       size: 12,
       md: 6,
