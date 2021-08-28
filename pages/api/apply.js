@@ -38,6 +38,7 @@ export default async function handler(req, res) {
       req.connection.remoteAddress === "::1"
         ? "127.0.0.1"
         : req.connection.remoteAddress;
+    console.log("apply :" + ip);
     req.body.ip = parseInt(ipInt(ip).toInt());
 
     let title = "申請成功";
@@ -102,7 +103,7 @@ export default async function handler(req, res) {
     } else {
       //驗證失敗
       return res.status(200).json({
-        title: "申請驗證失敗，身份證、戶號、生日需正確",
+        title: "申請驗證失敗，身分證、戶號、生日需正確",
         msg: errMsg.toString() + "驗證失敗",
       });
     }
