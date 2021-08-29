@@ -306,7 +306,7 @@ export default function Home() {
       size: 6,
       field: (
         <TextField
-          label="聯絡電話和手機"
+          label="聯絡電話或手機"
           name="phone"
           margin="none"
           required={true}

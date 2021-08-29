@@ -3,7 +3,14 @@ import { Paper, Grid, Button, MenuItem } from "@material-ui/core";
 import Image from "next/image";
 import icon from "../public/newIcon.jpg";
 
-export default function adminField(setBank_len, bank_len, name, born, profile) {
+export default function adminField(
+  setBank_len,
+  bank_len,
+  name,
+  born,
+  addr,
+  profile
+) {
   return [
     {
       size: 12,
@@ -54,6 +61,21 @@ export default function adminField(setBank_len, bank_len, name, born, profile) {
           placeholder="由系統自動帶入"
           variant="outlined"
           value={born}
+          disabled
+        />
+      ),
+    },
+    {
+      size: 12,
+      md: 12,
+      field: (
+        <TextField
+          label="地址"
+          name="addr"
+          margin="none"
+          placeholder="由系統自動帶入"
+          variant="outlined"
+          value={addr}
           disabled
         />
       ),
@@ -125,7 +147,7 @@ export default function adminField(setBank_len, bank_len, name, born, profile) {
       md: 6,
       field: (
         <TextField
-          label="代為申請人手機"
+          label="聯絡電話或手機"
           name="phone"
           margin="none"
           required={true}

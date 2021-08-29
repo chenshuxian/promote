@@ -87,15 +87,11 @@ const objToArr = (values) => {
 };
 
 export default function addForm(props) {
-  const { user } = useUser({ redirectTo: "/admin/login" });
-  // console.log(user);
-  const town = user ? user.user.town : null;
-  const editor = user ? user.user.id : null;
-
   const classes = useStyles();
   const [bank_len, setBank_len] = useState(12);
   const [name, setName] = useState("");
   const [born, setBorn] = useState("");
+  const [addr, setAddr] = useState("");
   const [open, setOpen] = useState(false);
   const [alOpen, setAlOpen] = useState(false);
   const [content, setContent] = useState("");
@@ -104,7 +100,35 @@ export default function addForm(props) {
   const [title, setTitle] = useState("");
   const [nyOpen, setNyOpen] = useState(false);
   const [buttonDisable, setButtonDisable] = useState(false);
-
+  const { user } = useUser({ redirectTo: "/admin/login" });
+  console.log(user);
+  if (!user || user.isLoggedIn === false) {
+    return (
+      <Grid
+        container
+        justifyContent="center"
+        alignItems="center"
+        component="main"
+        className={classes.root}
+        direction="row"
+        spacing={2}
+      >
+        <Grid item xs={12}>
+          <Header
+            headerButton={
+              <IconButton onClick={logout}>
+                <ExitToAppIcon fontSize="large" />
+              </IconButton>
+            }
+          />
+        </Grid>
+        <Grid item md={6} xs={12} className={classes.header}>
+          Loading
+        </Grid>
+        <Footer />
+      </Grid>
+    );
+  }
   /*
   申請處理
   狀態由0改為1申請中
@@ -112,7 +136,11 @@ export default function addForm(props) {
   const handleSave = () => {
     setNyOpen(false);
     // formValues.bank_id;formValues
-    const data = { api: "addUserFromAdmin", editor: editor, q: formValues };
+    const data = {
+      api: "addUserFromAdmin",
+      editor: user.user.id,
+      q: formValues,
+    };
 
     postData(process.env.NEXT_PUBLIC_API_USER_URL, data)
       .then((data) => {
@@ -132,19 +160,14 @@ export default function addForm(props) {
         console.log(data);
       })
       .catch((error) => console.error(error));
-    // post(process.env.NEXT_PUBLIC_API_APPLY_URL, formValues)
-    //   .then((data) => {
-    //     setTitle(data.title);
-    //     setContent(data.msg);
-    //     setOpen(true);
-    //   })
-    //   .catch((error) => console.error(error));
   };
 
   const onSubmit = (values) => {
-    console.log(values);
+    // console.log(values);
+    // console.log("addFormsubmit :" + user.user.town);
+    // console.log("addFormsubmit :" + user.user.editor);
     values.name = name;
-    values.town = town;
+    values.town = user.user.town;
 
     let title = "個人資訊確認";
     let newValues = objToArr(values);
@@ -217,6 +240,7 @@ export default function addForm(props) {
           // 未申請
           setBorn(data.born);
           setName(data.name);
+          setAddr(data.addr);
           setButtonDisable(false);
         } else {
           setOpen(true);
@@ -255,7 +279,7 @@ export default function addForm(props) {
       .catch((error) => console.error(error));
   };
 
-  const formFields = field(setBank_len, bank_len, name, born, profile);
+  const formFields = field(setBank_len, bank_len, name, born, addr, profile);
 
   return (
     <>

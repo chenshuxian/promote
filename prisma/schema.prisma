@@ -54,7 +54,7 @@ model test {
 }
 
 model jc_005 {
-  id           Int      @id @unique @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   apply_id     String   @db.VarChar(45)
   apply_name   String   @db.VarChar(45)
   bank_account String   @db.VarChar(45)

@@ -21,6 +21,15 @@ const town = {
   6: "wq",
 };
 
+const townToCh = {
+  1: "金城",
+  2: "金湖",
+  3: "金沙",
+  4: "金寧",
+  5: "烈嶼",
+  6: "烏坵",
+};
+
 export default async function handler(req, res) {
   const q = req.body.q;
   const api = req.body.api;
@@ -198,10 +207,8 @@ export default async function handler(req, res) {
       // 管理端取得客戶生日及姓名進行核查
       // 先判斷使用者狀態 > 1以上都不可以進行處理
       case "getUserProfile": {
-        let have,
-          name,
-          born,
-          status = 99;
+        let have, name, born, addr;
+        status = 99;
         try {
           const user = await prisma.apply.findUnique({
             where: {
@@ -211,6 +218,10 @@ export default async function handler(req, res) {
               status: true,
               name: true,
               born: true,
+              addr: true,
+              chun: true,
+              lin: true,
+              town: true,
             },
           });
 
@@ -220,12 +231,16 @@ export default async function handler(req, res) {
             status = user.status;
             name = user.name;
             born = user.born;
+            addr = `金門縣${townToCh[user.town]}鎮(鄉)${user.chun}${
+              user.lin
+            }鄰${user.addr}`;
           }
 
           return res.status(200).send({
             status,
             name,
             born,
+            addr,
           });
         } catch (err) {
           //console.log(err);
