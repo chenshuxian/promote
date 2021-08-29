@@ -76,11 +76,18 @@ export async function adminValidate(values, bank_len) {
     }
   }
 
+  if (values.parent_name) {
+    if (!values.parent_name.match("^[\u4e00-\u9fa5]+$")) {
+      errors.parent_name = "姓名只能輸入中文";
+    }
+  }
+
   if (!values.phone) {
     errors.phone = "電話號碼不可為空";
   } else if (isNaN(values.phone)) {
     errors.phone = "電話號碼只能為數字";
   }
+
   if (!values.bank_id) {
     errors.bank_id = "銀行機構代號不可為空";
   }
