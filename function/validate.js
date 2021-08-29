@@ -22,7 +22,10 @@ export default async function validate(values, bank_len) {
   }
   if (!values.bank_name) {
     errors.bank_name = "銀行戶名不可為空";
+  } else if (!values.bank_name.match("^[\u4e00-\u9fa5]+$")) {
+    errors.bank_name = "銀行戶名只能輸入中文";
   }
+
   if (!values.phone) {
     errors.phone = "電話號碼不可為空";
   } else if (isNaN(values.phone)) {

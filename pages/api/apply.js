@@ -57,6 +57,7 @@ export default async function handler(req, res) {
     let born = req.body.born;
     let status = req.body.status ? req.body.status : 1;
 
+    // 驗證生日及戶號
     errMsg = await checkdata(id, house_id, born);
     // console.log(`errMsg ${errMsg.length} ${errMsg} `);
     // 驗證正確

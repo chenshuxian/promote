@@ -30,6 +30,8 @@ export default async function handler(req, res) {
 
   if (req.method === "POST") {
     switch (api) {
+      // 確認使用者狀態
+      //
       case "checkStatus": {
         try {
           const user = await prisma.apply.findUnique({

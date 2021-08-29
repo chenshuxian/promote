@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Head from "next/head";
 import { Form } from "react-final-form";
 import { TextField, Select, Checkboxes } from "mui-rff";
 import { makeStyles } from "@material-ui/core";
@@ -20,14 +19,13 @@ import PersonalModal from "./components/PersonalModal";
 import validate from "../function/validate";
 import { STATUS } from "../function/common";
 import km from "../public/newIcon.jpg";
+import DescriptionIcon from "@material-ui/icons/Description";
 
 import {
   Typography,
   Paper,
-  Link,
   Grid,
   Button,
-  CssBaseline,
   MenuItem,
   IconButton,
 } from "@material-ui/core";
@@ -66,7 +64,7 @@ export default function Home() {
   const [title, setTitle] = useState("");
   const [checked, setChecked] = useState("none");
   const [nameCheck, setNameCheck] = useState("");
-  const [buttonDisable, setButtonDisable] = useState(false);
+  const [buttonDisable, setButtonDisable] = useState(true);
   const [id, setID] = useState("");
   const [formValues, setFormValues] = useState("");
   const [bank_len, setBank_len] = useState(12);
@@ -90,10 +88,13 @@ export default function Home() {
     //   3: "已撥款, 請至銀行帳戶查詢確認",
     //   99: "資格不符,請輸入正確的身分證",
     // };
+
+    // 將使用者身分證存入status
     setID(event.target.value);
     const data = { api: "checkStatus", q: event.target.value };
     post(process.env.NEXT_PUBLIC_API_USER_URL, data)
       .then((data) => {
+        // 如果狀態為審核通過，資料將不可以進行修正
         if (data.status >= 2) {
           setTitle(data.title);
           setContent(STATUS[data.status]);
@@ -107,6 +108,7 @@ export default function Home() {
   };
 
   // 確認使用者戶名
+  // 提醒線上申請銀行戶名需與本人同名
   const checkName = (event) => {
     //console.log(event.target.value);
     const data = { api: "checkName", q: { name: event.target.value, id: id } };
@@ -435,7 +437,7 @@ export default function Home() {
                       alignItems="center"
                       spacing={2}
                     >
-                      <Grid item xs={12}>
+                      <Grid item md={10} xs={12}>
                         <Image src={km} />
                       </Grid>
                       <Grid item xs={10}>
@@ -448,25 +450,39 @@ export default function Home() {
                           1.
                           原則普發，每人5000元，存入申請人個人帳號，110年7月20日前設藉之全體縣民及取得居留證之外配皆有。
                         </Typography>
-                        <Typography>2. 設藉於民政所及通緝犯不發。</Typography>
+                        <Typography>2. 設藉於民政所不發。</Typography>
                         <Typography>3. 採申請制 :</Typography>
                         <Typography className={classes.indent}>
                           3.1
-                          經由本平台進行線上申請，輸入申請人身分證、出生年月日等資訊進行申請作業。
+                          線上申請，輸入申請人身分證、出生年月日等資訊進行申請作業。
                         </Typography>
                         <Typography className={classes.indent}>
-                          3.2由村長及鄰長發放及收回申請表,
+                          3.2 線下紙本，由村長及鄰長發放及收回申請表,
                           附申請人存摺封面影本，可代辦不可代領，須有
                           土地銀行、郵局或金門信用合作社之帳號 。亦可郵寄申請，
                           建議仍以鄰長實體紙本收回較佳。
                         </Typography>
                         <Typography>
                           4.
-                          受理申請期程為公告後1個月、建檔1週、審核1週，屆時以正式公告為主。
+                          受理申請日自110年9月1日起至110年9月30日止(逾期不受理，視同無條件主動放棄請領權利)。
                         </Typography>
                         <Typography>
-                          5. 申請表由縣府統一印製送各公所。
+                          5.
+                          如有疑問請撥各鄉(鎮)公所專線、或1999、或縣府民政處專線082-325640。
                         </Typography>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          startIcon={<DescriptionIcon />}
+                          onClick={() =>
+                            window.open(
+                              "https://www.kinmen.gov.tw/News_Content.aspx?n=1BC6B0D9638A6EE2&sms=A2C62D68901B977C&s=0560AE4B3861D97C",
+                              "_blank"
+                            )
+                          }
+                        >
+                          相關申辦規定及表格下載
+                        </Button>
                       </Grid>
                     </Grid>
                   </Grid>

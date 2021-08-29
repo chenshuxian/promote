@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import { Form } from "react-final-form";
 import { TextField, Select, Checkboxes } from "mui-rff";
 import { makeStyles } from "@material-ui/core";
-import ImageSearchIcon from "@material-ui/icons/ImageSearch";
-import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import CancelIcon from "@material-ui/icons/Cancel";
+import SecurityIcon from "@material-ui/icons/Security";
+import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import TModal from "./components/modal.js";
@@ -13,16 +11,22 @@ import post from "../src/post";
 import Image from "next/image";
 import km from "../public/newIcon.jpg";
 import { STATUS, STATUSICON } from "../function/common";
-
 import { Typography, Paper, Grid, Button } from "@material-ui/core";
-import { DataUsageRounded } from "@material-ui/icons";
 
 const checkFields = [
   {
     size: 12,
     field: (
+      <Typography variant="h5" color="secondary">
+        線上紓困查詢服務
+      </Typography>
+    ),
+  },
+  {
+    size: 12,
+    field: (
       <TextField
-        label="身份證"
+        label="身分證"
         name="id"
         margin="none"
         required={true}
@@ -65,9 +69,9 @@ const useStyles = makeStyles({
 const validate = (values) => {
   const errors = {};
   if (!values.id) {
-    errors.id = "身份證不可為空";
+    errors.id = "身分證不可為空";
   } else if (!values.id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
-    errors.id = "身份證格式錯誤, 本國W123456789, 國外AB12345678";
+    errors.id = "身分證格式錯誤, 本國W123456789, 國外AB12345678";
   }
 
   if (!values.born) {
@@ -145,43 +149,81 @@ export default function Home() {
           <Image src={km} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <Form
-            onSubmit={checkSubmit}
-            validate={validate}
-            render={({ handleSubmit, form, submitting, pristine, values }) => (
-              <form onSubmit={handleSubmit} noValidate>
-                <Paper style={{ padding: 16 }}>
-                  <Grid container alignItems="flex-start" spacing={2}>
-                    {checkFields.map((item, idx) => (
-                      <Grid item xs={12} md={item.size} key={idx}>
-                        {item.field}
+          <Grid container spacing={2}>
+            <Grid item>
+              <Form
+                onSubmit={checkSubmit}
+                validate={validate}
+                render={({
+                  handleSubmit,
+                  form,
+                  submitting,
+                  pristine,
+                  values,
+                }) => (
+                  <form onSubmit={handleSubmit} noValidate>
+                    <Paper style={{ padding: 16 }}>
+                      <Grid container alignItems="flex-start" spacing={2}>
+                        {checkFields.map((item, idx) => (
+                          <Grid item xs={12} md={item.size} key={idx}>
+                            {item.field}
+                          </Grid>
+                        ))}
+                        <Grid item style={{ marginTop: 16 }}>
+                          <Button
+                            type="button"
+                            variant="contained"
+                            onClick={form.reset}
+                            disabled={submitting || pristine}
+                          >
+                            清除
+                          </Button>
+                        </Grid>
+                        <Grid item style={{ marginTop: 16 }}>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            disabled={submitting}
+                          >
+                            查詢
+                          </Button>
+                        </Grid>
                       </Grid>
-                    ))}
-                    <Grid item style={{ marginTop: 16 }}>
-                      <Button
-                        type="button"
-                        variant="contained"
-                        onClick={form.reset}
-                        disabled={submitting || pristine}
-                      >
-                        清除
-                      </Button>
-                    </Grid>
-                    <Grid item style={{ marginTop: 16 }}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        type="submit"
-                        disabled={submitting}
-                      >
-                        查詢
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Paper>
-              </form>
-            )}
-          />
+                    </Paper>
+                  </form>
+                )}
+              />
+            </Grid>
+            <Grid item>
+              <Grid container spacing={2}>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<SecurityIcon />}
+                    onClick={() => {
+                      setPrivateOpen(true);
+                    }}
+                  >
+                    隱私權聲明
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<AccountBoxIcon />}
+                    onClick={() => {
+                      setPersonalOpen(true);
+                    }}
+                  >
+                    個資法告知義務容
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
       <Footer />
