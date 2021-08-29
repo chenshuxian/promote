@@ -230,18 +230,9 @@ export default function Home() {
     post(process.env.NEXT_PUBLIC_API_APPLY_URL, formValues)
       .then((data) => {
         // 修改成功
-        if (data.update.count) {
-          console.log("fix");
-          // setClearField(true);
-          document.getElementById("id").value = "";
-          document.getElementById("born").value = "";
-          document.getElementById("bank_name").value = "";
-          document.getElementById("bank_account").value = "";
-        }
-        // setTitle(data.title);
-        // setContent(data.msg);
-        // setOpen(true);
-        alert(data.msg);
+        setTitle(data.title);
+        setContent(data.msg);
+        setOpen(true);
       })
       .catch((error) => console.error(error));
   };

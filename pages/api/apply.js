@@ -110,11 +110,6 @@ export default async function handler(req, res) {
             update,
           });
         }
-
-        return res.status(200).json({
-          title,
-          msg,
-        });
       } catch (err) {
         console.log(err);
         if (err.code === "P2002") {
@@ -128,7 +123,7 @@ export default async function handler(req, res) {
     } else {
       //驗證失敗
       return res.status(200).json({
-        title: "申請驗證失敗，身分證、戶號、生日需正確",
+        title: "申請驗證失敗、戶號、生日需正確",
         msg: errMsg.toString() + "驗證失敗",
       });
     }
