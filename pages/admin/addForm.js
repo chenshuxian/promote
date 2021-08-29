@@ -259,7 +259,6 @@ export default function addForm(props) {
                   <CancelIcon color="secondary" style={{ fontSize: 50 }} />
                 </Grid>
                 <Grid item>
-                  <Typography>申請人為未申請狀態才可進行紙本申請</Typography>
                   {data.status == 99 ? (
                     <Typography>{STATUS[data.status]}</Typography>
                   ) : (
