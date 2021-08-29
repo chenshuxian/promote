@@ -95,6 +95,22 @@ export default async function handler(req, res) {
           },
         });
 
+        console.log(update);
+
+        if (update.count) {
+          return res.status(200).json({
+            title,
+            msg,
+            update,
+          });
+        } else {
+          return res.status(200).json({
+            title: "申請失敗",
+            msg: "請備好本人身分證與各地民政單位連絡",
+            update,
+          });
+        }
+
         return res.status(200).json({
           title,
           msg,

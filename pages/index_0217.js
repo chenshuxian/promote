@@ -29,6 +29,7 @@ import {
   MenuItem,
   IconButton,
 } from "@material-ui/core";
+import { Update } from "@material-ui/icons";
 
 const useStyles = makeStyles({
   root: {
@@ -68,6 +69,7 @@ export default function Home() {
   const [id, setID] = useState("");
   const [formValues, setFormValues] = useState("");
   const [bank_len, setBank_len] = useState(12);
+  const [clearField, setClearField] = useState(false);
 
   const handleOpen = () => {
     setContent(<Image src={houseId} />);
@@ -227,9 +229,19 @@ export default function Home() {
     // formValues.bank_id;
     post(process.env.NEXT_PUBLIC_API_APPLY_URL, formValues)
       .then((data) => {
-        setTitle(data.title);
-        setContent(data.msg);
-        setOpen(true);
+        // 修改成功
+        if (data.update.count) {
+          console.log("fix");
+          // setClearField(true);
+          document.getElementById("id").value = "";
+          document.getElementById("born").value = "";
+          document.getElementById("bank_name").value = "";
+          document.getElementById("bank_account").value = "";
+        }
+        // setTitle(data.title);
+        // setContent(data.msg);
+        // setOpen(true);
+        alert(data.msg);
       })
       .catch((error) => console.error(error));
   };
@@ -270,6 +282,7 @@ export default function Home() {
         <TextField
           label="身分證"
           name="id"
+          id="id"
           margin="none"
           required={true}
           placeholder="w123456789"
@@ -287,6 +300,7 @@ export default function Home() {
         <TextField
           label="出生年月日"
           name="born"
+          id="born"
           margin="none"
           required={true}
           placeholder="格式:0890813"
@@ -331,6 +345,7 @@ export default function Home() {
         <TextField
           label="銀行戶名"
           name="bank_name"
+          id="bank_name"
           margin="none"
           required={true}
           placeholder="銀行戶名需與紓困人相同"
@@ -369,6 +384,7 @@ export default function Home() {
         <TextField
           label="銀行帳號"
           name="bank_account"
+          id="bank_account"
           margin="none"
           required={true}
           variant="outlined"
@@ -428,6 +444,7 @@ export default function Home() {
                   container
                   justifyContent="space-around"
                   alignItems="center"
+                  spacing={2}
                 >
                   <Grid item xs={12} md={6}>
                     <Grid
