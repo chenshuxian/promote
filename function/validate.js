@@ -61,6 +61,7 @@ export default async function validate(values, bank_len) {
   return errors;
 }
 
+// 管理介面驗證
 export async function adminValidate(values, bank_len) {
   // console.log(`validate ${bank_id}`);
   const errors = {};
@@ -68,6 +69,12 @@ export async function adminValidate(values, bank_len) {
     errors.id = "身分證不可為空";
   } else if (!values.id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
     errors.id = "身分證格式錯誤, 本國W123456789, 國外AB12345678";
+  }
+
+  if (!values.file_number) {
+    errors.file_number = "編碼序號不可為空";
+  } else if (isNaN(values.file_number)) {
+    errors.file_number = "編碼序號只能為7碼數字組成";
   }
 
   if (values.parent_id) {

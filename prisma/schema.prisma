@@ -25,7 +25,7 @@ model apply {
   chun         String    @default("null") @db.VarChar(45)
   lin          Int?      @default(1)
   addr         String    @default("null") @db.VarChar(200)
-  pay_date     Int       @default(0)
+  pay_date     String    @default("0") @db.VarChar(45)
   editor       String    @default("null") @db.VarChar(45)
   reason       Int       @default(1)
   relationship Int       @default(1)

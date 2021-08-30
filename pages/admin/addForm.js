@@ -17,6 +17,8 @@ import IconButton from "@material-ui/core/IconButton";
 import Router from "next/router";
 import AlterModal from "../components/modal";
 import NyModal from "../components/NyModal";
+import Layout from "./Layout";
+import { CodeSharp } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,6 +56,7 @@ const objToArr = (values) => {
     parent_name: "代為申請人姓名",
     reason: "代為申請原因",
     relationship: "與申請人關係",
+    file_number: "編碼序號",
   };
   let reason = {
     0: "無",
@@ -278,76 +281,121 @@ export default function addForm(props) {
       .catch((error) => console.error(error));
   };
 
-  const formFields = field(setBank_len, bank_len, name, born, addr, profile);
+  const checkFileNum = (event) => {
+    const data = {
+      api: "checkFileNumber",
+      q: { file_number: parseInt(event.target.value) },
+    };
+    postData(process.env.NEXT_PUBLIC_API_USER_URL, data)
+      .then((data) => {
+        // 確認檔案序號是否已經存在表中
+        if (data.already) {
+          console.log("filenumber");
+          setOpen(true);
+          setButtonDisable(true);
+          setTitle("編碼序號確認");
+          let content = (
+            <>
+              <Grid
+                container
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
+                spacing={2}
+              >
+                <Grid item>
+                  <CancelIcon color="secondary" style={{ fontSize: 50 }} />
+                </Grid>
+                <Grid item>
+                  <Typography>{data.msg}</Typography>
+                </Grid>
+              </Grid>
+            </>
+          );
+          setContent(content);
+        } else {
+          setButtonDisable(false);
+        }
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const formFields = field(
+    setBank_len,
+    bank_len,
+    name,
+    born,
+    addr,
+    profile,
+    checkFileNum
+  );
 
   return (
-    <>
-      <Grid
-        container
-        justifyContent="center"
-        alignItems="center"
-        component="main"
-        className={classes.root}
-        direction="row"
-        spacing={2}
-      >
-        <Grid item xs={12}>
-          <Header
-            headerButton={
-              <IconButton onClick={logout}>
-                <ExitToAppIcon fontSize="large" />
-              </IconButton>
-            }
-          />
-        </Grid>
-        <Grid item md={6} xs={12} className={classes.header}>
-          <Form
-            onSubmit={onSubmit}
-            initialValues={{
-              bank_id: "005",
-              relationship: "1",
-              reason: "0",
-            }}
-            buttonDisable={buttonDisable}
-            validate={(values) => {
-              return adminValidate(values, bank_len);
-            }}
-            render={({ handleSubmit, form, submitting, pristine, values }) => (
-              <form onSubmit={handleSubmit} noValidate>
-                <Paper style={{ padding: 16 }}>
-                  <Grid container alignItems="flex-start" spacing={2}>
-                    {formFields.map((item, idx) => (
-                      <Grid item xs={item.size} md={item.md} key={idx}>
-                        {item.field}
-                      </Grid>
-                    ))}
-                    <Grid item style={{ marginTop: 16 }}>
-                      <Button
-                        type="button"
-                        variant="contained"
-                        onClick={form.reset}
-                        disabled={submitting || pristine}
-                      >
-                        清除
-                      </Button>
+    // <Grid
+    //   container
+    //   justifyContent="center"
+    //   alignItems="center"
+    //   component="main"
+    //   className={classes.root}
+    //   direction="row"
+    //   spacing={2}
+    // >
+    //   <Grid item xs={12}>
+    //     <Header
+    //       headerButton={
+    //         <IconButton onClick={logout}>
+    //           <ExitToAppIcon fontSize="large" />
+    //         </IconButton>
+    //       }
+    //     />
+    //   </Grid>
+    <Layout>
+      <Grid item md={6} xs={12} className={classes.header}>
+        <Form
+          onSubmit={onSubmit}
+          initialValues={{
+            bank_id: "005",
+            relationship: "1",
+            reason: "0",
+          }}
+          buttonDisable={buttonDisable}
+          validate={(values) => {
+            return adminValidate(values, bank_len);
+          }}
+          render={({ handleSubmit, form, submitting, pristine, values }) => (
+            <form onSubmit={handleSubmit} noValidate>
+              <Paper style={{ padding: 16 }}>
+                <Grid container alignItems="flex-start" spacing={2}>
+                  {formFields.map((item, idx) => (
+                    <Grid item xs={item.size} md={item.md} key={idx}>
+                      {item.field}
                     </Grid>
-                    <Grid item style={{ marginTop: 16 }}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        type="submit"
-                        disabled={submitting || buttonDisable}
-                      >
-                        送出
-                      </Button>
-                    </Grid>
+                  ))}
+                  <Grid item style={{ marginTop: 16 }}>
+                    <Button
+                      type="button"
+                      variant="contained"
+                      onClick={form.reset}
+                      disabled={submitting || pristine}
+                    >
+                      清除
+                    </Button>
                   </Grid>
-                </Paper>
-              </form>
-            )}
-          />
-        </Grid>
-        <Footer />
+                  <Grid item style={{ marginTop: 16 }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      type="submit"
+                      disabled={submitting || buttonDisable}
+                    >
+                      送出
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </form>
+          )}
+        />
       </Grid>
       <AlterModal
         handleClose={handleAlClose}
@@ -368,6 +416,28 @@ export default function addForm(props) {
         content={content}
         title={title}
       />
-    </>
+    </Layout>
+    //   <Footer />
+
+    //   <AlterModal
+    //     handleClose={handleAlClose}
+    //     open={alOpen}
+    //     title="請將以下號碼寫在申請表上"
+    //     content={alContent}
+    //   />
+    //   <NyModal
+    //     handleClose={handleNyClose}
+    //     handleSave={handleSave}
+    //     open={nyOpen}
+    //     content={content}
+    //     title={title}
+    //   />
+    //   <TModal
+    //     handleClose={handleClose}
+    //     open={open}
+    //     content={content}
+    //     title={title}
+    //   />
+    // </Grid>
   );
 }

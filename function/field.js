@@ -9,7 +9,8 @@ export default function adminField(
   name,
   born,
   addr,
-  profile
+  profile,
+  checkFileNum
 ) {
   return [
     {
@@ -19,7 +20,7 @@ export default function adminField(
     },
     {
       size: 12,
-      md: 4,
+      md: 6,
       field: (
         <TextField
           label="申請人身分證"
@@ -37,7 +38,25 @@ export default function adminField(
     },
     {
       size: 12,
-      md: 4,
+      md: 6,
+      field: (
+        <TextField
+          label="編碼序號"
+          name="file_number"
+          margin="none"
+          required={true}
+          placeholder="7碼數字組成"
+          variant="outlined"
+          onBlur={checkFileNum}
+          inputProps={{
+            maxLength: 7,
+          }}
+        />
+      ),
+    },
+    {
+      size: 12,
+      md: 6,
       field: (
         <TextField
           label="姓名"
@@ -52,7 +71,7 @@ export default function adminField(
     },
     {
       size: 12,
-      md: 4,
+      md: 6,
       field: (
         <TextField
           label="出生年月日"

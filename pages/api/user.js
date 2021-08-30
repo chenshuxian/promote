@@ -40,7 +40,6 @@ export default async function handler(req, res) {
   if (req.method === "POST") {
     switch (api) {
       // 確認使用者狀態
-      //
       case "checkStatus": {
         try {
           const user = await prisma.apply.findUnique({
@@ -72,6 +71,7 @@ export default async function handler(req, res) {
         }
         break;
       }
+
       case "checkStatusBorn": {
         let data = {};
         let newUser;
@@ -134,6 +134,7 @@ export default async function handler(req, res) {
           return res.status(400).send("建檔失敗");
         }
       }
+
       case "checkName": {
         let msg = "銀行戶名必預與申請人相同";
         let is_same = 0;
@@ -255,8 +256,8 @@ export default async function handler(req, res) {
       // 管理端上傳狀態都為2，已審核
       case "addUserFromAdmin": {
         console.log(DATE());
-        let bankTable = `${town[q.town]}_${q.bank_id}`;
-        console.log("user api bankTable: " + bankTable);
+        // let bankTable = `${town[q.town]}_${q.bank_id}`;
+        // console.log("user api bankTable: " + bankTable);
 
         // 總表更新
         try {
@@ -276,21 +277,22 @@ export default async function handler(req, res) {
               relationship: parseInt(q.relationship),
               update_time: DATE(),
               ip: req.body.ip,
+              file_number: parseInt(q.file_number),
             },
           });
 
           // 更新各別帳戶資料表
-          const bank = await prisma[bankTable].create({
-            data: {
-              apply_id: q.id,
-              apply_name: q.name,
-              bank_account: q.bank_account,
-              parent_id: q.parent_id,
-              parent_name: q.parent_name,
-            },
-          });
+          // const bank = await prisma[bankTable].create({
+          //   data: {
+          //     apply_id: q.id,
+          //     apply_name: q.name,
+          //     bank_account: q.bank_account,
+          //     parent_id: q.parent_id,
+          //     parent_name: q.parent_name,
+          //   },
+          // });
 
-          console.log(`update ${JSON.stringify(bank)}`);
+          // console.log(`update ${JSON.stringify(bank)}`);
 
           let have = Object.keys(user).length;
           // 戶名和申請人相同
@@ -307,6 +309,45 @@ export default async function handler(req, res) {
             status: 99,
             err,
           });
+        }
+      }
+
+      // 確認fileNumber
+      case "checkFileNumber": {
+        if (q.file_number !== null) {
+          try {
+            const fileNumber = await prisma["apply"].findMany({
+              where: {
+                file_number: q.file_number,
+              },
+              select: {
+                file_number: true,
+              },
+            });
+
+            console.log("USER API FILENUMBER: " + fileNumber);
+            let have = Object.keys(fileNumber).length;
+
+            // 戶名和申請人相同
+            if (have) {
+              return res.status(200).json({
+                already: true,
+                msg: `編號 ${fileNumber[0].file_number} 已存在 `,
+              });
+            } else {
+              return res.status(200).json({
+                already: false,
+                msg: `此編號尚未使用`,
+              });
+            }
+          } catch (err) {
+            console.log(err);
+            return res.status(400).json({
+              title: "更新失敗",
+              status: 99,
+              err,
+            });
+          }
         }
       }
 

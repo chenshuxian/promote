@@ -20,6 +20,7 @@ const useStyles = makeStyles({
     flexGrow: 1,
     margin: 0,
     position: "fixed",
+    top: 0,
     width: "100%",
     zIndex: 999,
     borderRadius: 0,
