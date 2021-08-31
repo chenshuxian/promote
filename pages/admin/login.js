@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
     width: "100vw",
     backgroundColor: blue[100],
   },
+  header: {
+    marginTop: 90,
+  },
   image: {
     alignSelf: "center",
   },
@@ -62,9 +65,8 @@ export default function SignInSide() {
   //   redirectIfFound: true,
   // });
   const { user } = useUser({});
-
   // 非首次登入
-  console.log("loginPage: " + user);
+  // console.log("loginPage: " + user.isLoggedIn);
   if (user && user.isLoggedIn) {
     if (!user.user.is_fix_pw) {
       //console.log("userisifx");

@@ -278,6 +278,7 @@ export default async function handler(req, res) {
               update_time: DATE(),
               ip: req.body.ip,
               file_number: parseInt(q.file_number),
+              other: req.body.other,
             },
           });
 

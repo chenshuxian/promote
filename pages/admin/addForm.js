@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 const logout = () => {
   postData("/api/logout")
     .then((data) => {
-      if (!data.isisLoggedIn) {
+      if (!data.isLoggedIn) {
         Router.push("/admin/login");
       }
     })
@@ -57,6 +57,7 @@ const objToArr = (values) => {
     reason: "代為申請原因",
     relationship: "與申請人關係",
     file_number: "編碼序號",
+    other: "其他關係",
   };
   let reason = {
     0: "無",
@@ -66,14 +67,15 @@ const objToArr = (values) => {
   };
   let relationship = {
     1: "本人",
-    2: "父母",
-    3: "監護人",
-    4: "親友",
+    2: "父親",
+    3: "母親",
+    4: "監護人",
+    5: "其他",
   };
   let arr = [];
   let obj = {};
   for (const [key, value] of Object.entries(values)) {
-    console.log(`${key}: ${value}`);
+    // console.log(`${key}: ${value}`);
     if (key !== "town") {
       if (key == "reason") {
         value = reason[value];
@@ -89,6 +91,16 @@ const objToArr = (values) => {
   return arr;
 };
 
+// 鄉鎮代碼
+const townId = {
+  1: "51",
+  2: "00",
+  3: "53",
+  4: "55",
+  5: "56",
+  6: "57",
+};
+
 export default function addForm(props) {
   const classes = useStyles();
   const [bank_len, setBank_len] = useState(12);
@@ -96,6 +108,8 @@ export default function addForm(props) {
   const [born, setBorn] = useState("");
   const [addr, setAddr] = useState("");
   const [open, setOpen] = useState(false);
+  const [relation, setRelation] = useState(true);
+  const [other, setOther] = useState(true);
   const [alOpen, setAlOpen] = useState(false);
   const [content, setContent] = useState("");
   const [alContent, setAlContent] = useState("");
@@ -104,7 +118,7 @@ export default function addForm(props) {
   const [nyOpen, setNyOpen] = useState(false);
   const [buttonDisable, setButtonDisable] = useState(false);
   const { user } = useUser({ redirectTo: "/admin/login" });
-  console.log(user);
+  // console.log(user);
   if (!user || user.isLoggedIn === false) {
     return (
       <Grid
@@ -159,8 +173,6 @@ export default function addForm(props) {
         // );
         // setAlContent(content);
         // setAlOpen(true);
-
-        console.log(data);
       })
       .catch((error) => console.error(error));
   };
@@ -239,7 +251,7 @@ export default function addForm(props) {
     const data = { api: "getUserProfile", q: { id: event.target.value } };
     postData(process.env.NEXT_PUBLIC_API_USER_URL, data)
       .then((data) => {
-        if (data.status === 0 || data.name === "陳書賢") {
+        if (data.status === 0) {
           // 未申請
           setBorn(data.born);
           setName(data.name);
@@ -327,7 +339,11 @@ export default function addForm(props) {
     born,
     addr,
     profile,
-    checkFileNum
+    checkFileNum,
+    relation,
+    setRelation,
+    other,
+    setOther
   );
 
   return (
@@ -357,6 +373,7 @@ export default function addForm(props) {
             bank_id: "005",
             relationship: "1",
             reason: "0",
+            file_number: townId[user.user.town],
           }}
           buttonDisable={buttonDisable}
           validate={(values) => {

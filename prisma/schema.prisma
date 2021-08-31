@@ -34,6 +34,7 @@ model apply {
   create_time  DateTime  @default(now()) @db.Timestamp(0)
   update_time  DateTime? @db.Timestamp(0)
   file_number  Int
+  other        String?   @db.VarChar(45)
 }
 
 model users {

@@ -10,7 +10,11 @@ export default function adminField(
   born,
   addr,
   profile,
-  checkFileNum
+  checkFileNum,
+  relation,
+  setRelation,
+  other,
+  setOther
 ) {
   return [
     {
@@ -99,6 +103,7 @@ export default function adminField(
         />
       ),
     },
+
     {
       size: 12,
       md: 6,
@@ -108,57 +113,36 @@ export default function adminField(
           label="與帳戶人關係"
           formControlProps={{ margin: "none" }}
           variant="outlined"
+          onClick={(event) => {
+            // console.log(event.target.value);
+            let val = event.target.value;
+            if (val == "0" || val === undefined) {
+              setRelation(relation);
+            } else {
+              if (event.target.value !== "1") {
+                //console.log("本人1");
+                setRelation(false);
+              } else {
+                //console.log("本人2");
+                setRelation(true);
+              }
+              // 控制其他輸入框
+              if (event.target.value !== "5") {
+                //console.log("其他1");
+                setOther(true);
+              } else {
+                //console.log("其他2");
+                setOther(false);
+              }
+            }
+          }}
         >
           <MenuItem value="1">本人</MenuItem>
-          <MenuItem value="2">父母</MenuItem>
-          <MenuItem value="3">監護人</MenuItem>
-          <MenuItem value="4">親友</MenuItem>
+          <MenuItem value="2">父親</MenuItem>
+          <MenuItem value="3">母親</MenuItem>
+          <MenuItem value="4">監護人</MenuItem>
+          <MenuItem value="5">其他</MenuItem>
         </Select>
-      ),
-    },
-    {
-      size: 12,
-      md: 6,
-      field: (
-        <Select
-          name="reason"
-          label="代為申請原因"
-          formControlProps={{ margin: "none" }}
-          variant="outlined"
-        >
-          <MenuItem value="0"></MenuItem>
-          <MenuItem value="1">未成年</MenuItem>
-          <MenuItem value="2">警示帳戶</MenuItem>
-          <MenuItem value="3">凍結帳戶</MenuItem>
-        </Select>
-      ),
-    },
-    {
-      size: 12,
-      md: 6,
-      field: (
-        <TextField
-          label="代為申請人身分證"
-          name="parent_id"
-          margin="none"
-          placeholder="w123456789"
-          variant="outlined"
-          inputProps={{
-            maxLength: 10,
-          }}
-        />
-      ),
-    },
-    {
-      size: 12,
-      md: 6,
-      field: (
-        <TextField
-          label="代為申請人姓名"
-          name="parent_name"
-          margin="none"
-          variant="outlined"
-        />
       ),
     },
     {
@@ -177,7 +161,68 @@ export default function adminField(
         />
       ),
     },
+    {
+      size: 12,
+      md: 6,
+      field: (
+        <TextField
+          label="其他關係"
+          name="other"
+          margin="none"
+          placeholder="關係選擇其他時需要填入"
+          variant="outlined"
+          disabled={other}
+        />
+      ),
+    },
 
+    {
+      size: 12,
+      md: 6,
+      field: (
+        <Select
+          name="reason"
+          label="特殊原因"
+          formControlProps={{ margin: "none" }}
+          variant="outlined"
+          disabled={relation}
+        >
+          <MenuItem value="0"></MenuItem>
+          <MenuItem value="1">未成年</MenuItem>
+          <MenuItem value="2">警示帳戶</MenuItem>
+          <MenuItem value="3">凍結帳戶</MenuItem>
+        </Select>
+      ),
+    },
+    {
+      size: 12,
+      md: 6,
+      field: (
+        <TextField
+          label="法定代理(領)人證號"
+          name="parent_id"
+          margin="none"
+          placeholder="w123456789"
+          variant="outlined"
+          disabled={relation}
+          inputProps={{
+            maxLength: 10,
+          }}
+        />
+      ),
+    },
+    {
+      size: 12,
+      md: 6,
+      field: (
+        <TextField
+          label="代理(領)人姓名"
+          name="parent_name"
+          margin="none"
+          variant="outlined"
+        />
+      ),
+    },
     {
       size: 12,
       md: 6,
@@ -201,7 +246,7 @@ export default function adminField(
     },
     {
       size: 12,
-      md: 12,
+      md: 6,
       field: (
         <TextField
           label="銀行帳號"

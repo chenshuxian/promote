@@ -73,8 +73,8 @@ export async function adminValidate(values, bank_len) {
 
   if (!values.file_number) {
     errors.file_number = "編碼序號不可為空";
-  } else if (isNaN(values.file_number)) {
-    errors.file_number = "編碼序號只能為7碼數字組成";
+  } else if (!values.file_number.match("\\d{7}$")) {
+    errors.file_number = "編碼序號須為7碼數字組成";
   }
 
   if (values.parent_id) {
