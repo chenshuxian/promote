@@ -46,8 +46,7 @@ const useStyles = makeStyles({
     marginLeft: 20,
   },
   indent: {
-    textIndent: "-1.5em",
-    marginLeft: "2.5em",
+    marginLeft: "1.5em",
   },
 });
 
@@ -238,6 +237,14 @@ export default function Home() {
   };
 
   const formFields = [
+    {
+      size: 12,
+      field: (
+        <Typography variant="h5" color="secondary">
+          線上申請表
+        </Typography>
+      ),
+    },
     {
       size: 6,
       field: (
@@ -456,41 +463,39 @@ export default function Home() {
                       <Grid item xs={10}>
                         <Typography>
                           1.
-                          原則普發，每人5000元，存入申請人個人帳號，110年7月20日前設藉之全體縣民及取得居留證之外配皆有。
+                          作業基準日110年7月20日設籍金門、外(陸)籍配偶居留證持證地址為金門縣者(不含戶政事務所依法將其戶籍至戶政事務所者)。
                         </Typography>
-                        <Typography>2. 設藉於民政所不發。</Typography>
-                        <Typography>3. 採申請制 :</Typography>
-                        <Typography className={classes.indent}>
-                          3.1
-                          線上申請，輸入申請人身分證、出生年月日等資訊進行申請作業。
+                        <Typography>
+                          2. 發放金額為每人新臺幣5,000元整。
                         </Typography>
-                        <Typography className={classes.indent}>
-                          3.2 線下紙本，由村長及鄰長發放及收回申請表,
-                          附申請人存摺封面影本，可代辦不可代領，須有
-                          土地銀行、郵局或金門信用合作社之帳號 。亦可郵寄申請，
-                          建議仍以鄰長實體紙本收回較佳。
+                        <Typography>
+                          3.
+                          採申請制，須持有土地銀行、郵局及金門信用合作社等其中一家金融帳戶。
                         </Typography>
                         <Typography>
                           4.
-                          受理申請日自110年9月1日起至110年9月30日止(逾期不受理，視同無條件主動放棄請領權利)。
+                          線上申請僅受理匯入本人金融帳戶，餘請循紙本或郵寄方式申請。
                         </Typography>
                         <Typography>
                           5.
-                          如有疑問請撥各鄉(鎮)公所專線、或1999、或縣府民政處專線082-325640。
+                          受理申請時間：自110年9月1日起至110年9月30日止(逾期不受理)。
                         </Typography>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          startIcon={<DescriptionIcon />}
-                          onClick={() =>
-                            window.open(
-                              "https://www.kinmen.gov.tw/News_Content.aspx?n=1BC6B0D9638A6EE2&sms=A2C62D68901B977C&s=0560AE4B3861D97C",
-                              "_blank"
-                            )
-                          }
-                        >
-                          相關申辦規定及表格下載
-                        </Button>
+                        <Typography>6. 洽詢專線：</Typography>
+                        <Typography className={classes.indent}>
+                          1. 金城鎮公所082-325057；金城戶政所082-324283 <br />{" "}
+                          2. 金湖鎮公所082-332528；金湖戶政所082-330790 <br />{" "}
+                          3. 金沙鎮公所082-352150；金沙戶政所082-351924 <br />{" "}
+                          4. 金寧鄉公所082-325610；金寧戶政所082-324281 <br />{" "}
+                          5. 烈嶼鄉公所082-362500；烈嶼戶政所082-363079 <br />{" "}
+                          6. 烏坵鄉公所0826-66039；金城戶政所082-324283 <br />{" "}
+                          7. 縣府1999或民政處082-325640
+                        </Typography>
+                        <Typography>
+                          7. 申請方式請參閱作業要點{" "}
+                          <a href="https://reurl.cc/dGRoKD" target="_blank">
+                            https://reurl.cc/dGRoKD
+                          </a>
+                        </Typography>
                       </Grid>
                     </Grid>
                   </Grid>
