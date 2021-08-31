@@ -117,6 +117,7 @@ export default function addForm(props) {
   const [title, setTitle] = useState("");
   const [nyOpen, setNyOpen] = useState(false);
   const [buttonDisable, setButtonDisable] = useState(true);
+  const [fileDisable, setFileDisable] = useState(true);
   const { user } = useUser({ redirectTo: "/admin/login" });
   // console.log(user);
   if (!user || user.isLoggedIn === false) {
@@ -304,7 +305,7 @@ export default function addForm(props) {
         if (data.already) {
           console.log("filenumber");
           setOpen(true);
-          setButtonDisable(true);
+          setFileDisable(true);
           setTitle("編碼序號確認");
           let content = (
             <>
@@ -326,7 +327,8 @@ export default function addForm(props) {
           );
           setContent(content);
         } else {
-          setButtonDisable(false);
+          // 需要先確認身份是可申請者才可以解開送出鈕
+          setFileDisable(false);
         }
       })
       .catch((error) => console.error(error));
@@ -377,6 +379,7 @@ export default function addForm(props) {
             file_number: townId[user.user.town],
           }}
           buttonDisable={buttonDisable}
+          fileDisable={fileDisable}
           validate={(values) => {
             return adminValidate(values, bank_len);
           }}
@@ -404,7 +407,7 @@ export default function addForm(props) {
                       variant="contained"
                       color="primary"
                       type="submit"
-                      disabled={submitting || buttonDisable}
+                      disabled={submitting || buttonDisable || fileDisable}
                     >
                       送出
                     </Button>
