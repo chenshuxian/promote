@@ -14,7 +14,8 @@ export default function adminField(
   relation,
   setRelation,
   other,
-  setOther
+  setOther,
+  buttonDisable
 ) {
   return [
     {
@@ -52,6 +53,7 @@ export default function adminField(
           placeholder="7碼數字組成"
           variant="outlined"
           onBlur={checkFileNum}
+          disabled={buttonDisable}
           inputProps={{
             maxLength: 7,
           }}
@@ -219,6 +221,7 @@ export default function adminField(
           label="代理(領)人姓名"
           name="parent_name"
           margin="none"
+          disabled={relation}
           variant="outlined"
         />
       ),

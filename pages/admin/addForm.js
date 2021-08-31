@@ -116,7 +116,7 @@ export default function addForm(props) {
   const [formValues, setFormValues] = useState("");
   const [title, setTitle] = useState("");
   const [nyOpen, setNyOpen] = useState(false);
-  const [buttonDisable, setButtonDisable] = useState(false);
+  const [buttonDisable, setButtonDisable] = useState(true);
   const { user } = useUser({ redirectTo: "/admin/login" });
   // console.log(user);
   if (!user || user.isLoggedIn === false) {
@@ -343,7 +343,8 @@ export default function addForm(props) {
     relation,
     setRelation,
     other,
-    setOther
+    setOther,
+    buttonDisable
   );
 
   return (
