@@ -208,7 +208,7 @@ export default async function handler(req, res) {
       // 管理端取得客戶生日及姓名進行核查
       // 先判斷使用者狀態 > 1以上都不可以進行處理
       case "getUserProfile": {
-        let have, name, born, addr;
+        let have, name, born, addr, file_number;
         status = 99;
         try {
           const user = await prisma.apply.findUnique({
@@ -223,6 +223,7 @@ export default async function handler(req, res) {
               chun: true,
               lin: true,
               town: true,
+              file_number: true,
             },
           });
 
@@ -232,9 +233,15 @@ export default async function handler(req, res) {
             status = user.status;
             name = user.name;
             born = user.born;
-            addr = `金門縣${townToCh[user.town]}鎮(鄉)${user.chun}${
-              user.lin
-            }鄰${user.addr}`;
+            file_number = user.file_number;
+            if (user.lin == "0") {
+              // 陸配
+              addr = user.addr;
+            } else {
+              addr = `金門縣${townToCh[user.town]}鎮(鄉)${user.chun}${
+                user.lin
+              }鄰${user.addr}`;
+            }
           }
 
           return res.status(200).send({
@@ -242,9 +249,10 @@ export default async function handler(req, res) {
             name,
             born,
             addr,
+            file_number,
           });
         } catch (err) {
-          //console.log(err);
+          console.log(err);
           return res.status(400).json({
             title: "申請失敗",
             status: 99,

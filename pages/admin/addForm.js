@@ -18,7 +18,6 @@ import Router from "next/router";
 import AlterModal from "../components/modal";
 import NyModal from "../components/NyModal";
 import Layout from "./Layout";
-import { CodeSharp } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -149,7 +148,7 @@ export default function addForm(props) {
   }
   /*
   申請處理
-  狀態由0改為1申請中
+  狀態由0改為2申請中
   */
   const handleSave = () => {
     setNyOpen(false);
@@ -163,6 +162,9 @@ export default function addForm(props) {
     postData(process.env.NEXT_PUBLIC_API_USER_URL, data)
       .then((data) => {
         console.log(data);
+        document.getElementById("reset").click();
+
+        // alert(data.msg);
         setTitle(data.title);
         setContent(<Typography variant="h6">{data.msg}</Typography>);
         setOpen(true);
@@ -185,7 +187,7 @@ export default function addForm(props) {
     values.name = name;
     values.town = user.user.town;
 
-    let title = "個人資訊確認";
+    let title = "建檔資料確認";
     let newValues = objToArr(values);
     let today = new Date();
     let y = today.getFullYear();
@@ -196,7 +198,7 @@ export default function addForm(props) {
       <Grid container spacing={2}>
         <Grid item>
           <Typography color="error">
-            請確認所輸入資料完全正確，銀行帳戶確為本人所擁有，如因資料不全造成退匯，所衍生問題或法律責任由本人自行承擔。
+            請再核對相關資訊正確否，如編碼序號、銀行帳號、連絡電話等資料，無誤後按確認送出存檔。
           </Typography>
           <Typography>申請時間 : {`${y} - ${m + 1} - ${d}`}</Typography>
         </Grid>
@@ -205,9 +207,17 @@ export default function addForm(props) {
             {newValues.map((v, i) => {
               return (
                 <Grid key={i} item xs>
-                  <Typography>
-                    {v.name} : {v.value}
-                  </Typography>
+                  {v.name == "編碼序號" ||
+                  v.name == "手機號碼" ||
+                  v.name == "銀行帳號" ? (
+                    <Typography color="error">
+                      {v.name} : {v.value}
+                    </Typography>
+                  ) : (
+                    <Typography>
+                      {v.name} : {v.value}
+                    </Typography>
+                  )}
                 </Grid>
               );
             })}
@@ -279,6 +289,9 @@ export default function addForm(props) {
                     <Typography>{STATUS[data.status]}</Typography>
                   ) : (
                     <>
+                      <Typography color="error">
+                        編碼序號: {data.file_number}
+                      </Typography>
                       <Typography>申請人進度: {STATUS[data.status]}</Typography>
                       <Typography>申請人姓名: {data.name}</Typography>
                       <Typography>申請人生日: {data.born}</Typography>
@@ -381,10 +394,10 @@ export default function addForm(props) {
           buttonDisable={buttonDisable}
           fileDisable={fileDisable}
           validate={(values) => {
-            return adminValidate(values, bank_len);
+            return adminValidate(values, bank_len, born);
           }}
           render={({ handleSubmit, form, submitting, pristine, values }) => (
-            <form onSubmit={handleSubmit} noValidate>
+            <form onSubmit={handleSubmit}>
               <Paper style={{ padding: 16 }}>
                 <Grid container alignItems="flex-start" spacing={2}>
                   {formFields.map((item, idx) => (
@@ -396,6 +409,7 @@ export default function addForm(props) {
                     <Button
                       type="button"
                       variant="contained"
+                      id="reset"
                       onClick={form.reset}
                       disabled={submitting || pristine}
                     >

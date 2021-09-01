@@ -1,4 +1,5 @@
-export default async function validate(values, bank_len) {
+export default async function validate(values, bank_len, parent_gender) {
+  console.log(parent_gender);
   // console.log(`validate ${bank_id}`);
   const errors = {};
   if (!values.id) {
@@ -62,7 +63,7 @@ export default async function validate(values, bank_len) {
 }
 
 // 管理介面驗證
-export async function adminValidate(values, bank_len) {
+export async function adminValidate(values, bank_len, born) {
   // console.log(`validate ${bank_id}`);
   const errors = {};
   if (!values.id) {
@@ -78,8 +79,23 @@ export async function adminValidate(values, bank_len) {
   }
 
   if (values.parent_id) {
-    if (!values.parent_id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
-      errors.parent_id = "身分證格式錯誤, 本國W123456789, 國外AB12345678";
+    // 父親
+    if (values.relationship == 2) {
+      // console.log(values.relationship + " " + values.parent_id);
+      // console.log(values.parent_id.substr(1, 1));
+      if (values.parent_id.substr(1, 1) !== "1") {
+        errors.parent_id = "關係人為父親時身分證第二位應為1";
+      } else if (!values.parent_id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
+        errors.parent_id = "身分證格式錯誤, 本國W123456789, 國外AB12345678";
+      }
+    }
+    // 母親
+    if (values.relationship == 3) {
+      if (values.parent_id.substr(1, 1) !== "2") {
+        errors.parent_id = "關係人為母親時身分證第二位應為2";
+      } else if (!values.parent_id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
+        errors.parent_id = "身分證格式錯誤, 本國W123456789, 國外AB12345678";
+      }
     }
   }
 
@@ -106,6 +122,15 @@ export async function adminValidate(values, bank_len) {
     values.bank_account.length !== bank_len
   ) {
     errors.bank_account = `銀行帳號由${bank_len}位數字組成`;
+  }
+
+  if (values.reason) {
+    console.log(values.reason);
+    if (values.reason == 1) {
+      if (born.substr(1, 2) < 90) {
+        errors.reason = "申請人年齡需小於20歲";
+      }
+    }
   }
 
   return errors;
