@@ -19,7 +19,7 @@ const checkdata = async (id, house_id, born) => {
       },
     });
 
-    if (user.house_id !== house_id) {
+    if (user.house_id.toUpperCase() !== house_id.toUpperCase()) {
       msg.push("戶號");
     }
     if (user.born !== born) {

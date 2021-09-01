@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import { Form } from "react-final-form";
-import Head from "next/head";
 import { TextField, Select, Checkboxes } from "mui-rff";
 import { makeStyles } from "@material-ui/core";
-import ImageSearchIcon from "@material-ui/icons/ImageSearch";
-import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import CancelIcon from "@material-ui/icons/Cancel";
+import SecurityIcon from "@material-ui/icons/Security";
+import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import TModal from "./components/modal.js";
@@ -14,10 +11,6 @@ import post from "../src/post";
 import Image from "next/image";
 import km from "../public/newIcon.jpg";
 import { STATUS, STATUSICON } from "../function/common";
-import DescriptionIcon from "@material-ui/icons/Description";
-import HelpIcon from "@material-ui/icons/Help";
-import Router from "next/router";
-
 import { Typography, Paper, Grid, Button } from "@material-ui/core";
 
 const checkFields = [
@@ -25,7 +18,7 @@ const checkFields = [
     size: 12,
     field: (
       <Typography variant="h5" color="secondary">
-        當前僅提供查詢服務，線上申請將於9月6日正式上線
+        線上紓困查詢服務
       </Typography>
     ),
   },
@@ -143,19 +136,7 @@ export default function Home() {
 
   return (
     <>
-      <Header
-        headerButton={
-          <Button
-            variant="contained"
-            color="secondary"
-            style={{ margin: 15 }}
-            startIcon={<DescriptionIcon />}
-            onClick={() => Router.push("/index")}
-          >
-            申請頁
-          </Button>
-        }
-      />
+      <Header />
       <Grid
         container
         className={classes.root}
@@ -168,73 +149,81 @@ export default function Home() {
           <Image src={km} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <Form
-            onSubmit={checkSubmit}
-            validate={validate}
-            render={({ handleSubmit, form, submitting, pristine, values }) => (
-              <form onSubmit={handleSubmit} noValidate>
-                <Paper style={{ padding: 16 }}>
-                  <Grid container alignItems="flex-start" spacing={2}>
-                    {checkFields.map((item, idx) => (
-                      <Grid item xs={12} md={item.size} key={idx}>
-                        {item.field}
+          <Grid container spacing={2}>
+            <Grid item>
+              <Form
+                onSubmit={checkSubmit}
+                validate={validate}
+                render={({
+                  handleSubmit,
+                  form,
+                  submitting,
+                  pristine,
+                  values,
+                }) => (
+                  <form onSubmit={handleSubmit} noValidate>
+                    <Paper style={{ padding: 16 }}>
+                      <Grid container alignItems="flex-start" spacing={2}>
+                        {checkFields.map((item, idx) => (
+                          <Grid item xs={12} md={item.size} key={idx}>
+                            {item.field}
+                          </Grid>
+                        ))}
+                        <Grid item style={{ marginTop: 16 }}>
+                          <Button
+                            type="button"
+                            variant="contained"
+                            onClick={form.reset}
+                            disabled={submitting || pristine}
+                          >
+                            清除
+                          </Button>
+                        </Grid>
+                        <Grid item style={{ marginTop: 16 }}>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            disabled={submitting}
+                          >
+                            查詢
+                          </Button>
+                        </Grid>
                       </Grid>
-                    ))}
-                    <Grid item style={{ marginTop: 16 }}>
-                      <Button
-                        type="button"
-                        variant="contained"
-                        onClick={form.reset}
-                        disabled={submitting || pristine}
-                      >
-                        清除
-                      </Button>
-                    </Grid>
-                    <Grid item style={{ marginTop: 16 }}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        type="submit"
-                        disabled={submitting}
-                      >
-                        查詢
-                      </Button>
-                    </Grid>
-                    <Grid item style={{ marginTop: 16 }}>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        startIcon={<DescriptionIcon />}
-                        onClick={() =>
-                          window.open(
-                            "https://www.kinmen.gov.tw/News_Content.aspx?n=1BC6B0D9638A6EE2&sms=A2C62D68901B977C&s=0560AE4B3861D97C",
-                            "_blank"
-                          )
-                        }
-                      >
-                        相關申辦規定及表格下載
-                      </Button>
-                    </Grid>
-                    <Grid item style={{ marginTop: 16 }}>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        startIcon={<HelpIcon />}
-                        onClick={() =>
-                          window.open(
-                            "https://ws.kinmen.gov.tw/Download.ashx?u=LzAwMS9VcGxvYWQvMzA1L3JlbGZpbGUvMTE5NTkvNzA2MzQzLzU5M2IwZDhiLTg0ZjYtNDRlMS1hZTVlLWM5M2JhOWFkYjA0Ni5wZGY%3D&n=5ZWP6IiH562ULnBkZg%3D%3D",
-                            "_blank"
-                          )
-                        }
-                      >
-                        {`Q & A `}
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Paper>
-              </form>
-            )}
-          />
+                    </Paper>
+                  </form>
+                )}
+              />
+            </Grid>
+            <Grid item>
+              <Grid container spacing={2}>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<SecurityIcon />}
+                    onClick={() => {
+                      setPrivateOpen(true);
+                    }}
+                  >
+                    隱私權聲明
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<AccountBoxIcon />}
+                    onClick={() => {
+                      setPersonalOpen(true);
+                    }}
+                  >
+                    個資法告知義務容
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
       <Footer />
