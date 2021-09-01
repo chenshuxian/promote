@@ -45,8 +45,8 @@ export default async function validate(values, bank_len) {
   }
   if (!values.house_id) {
     errors.house_id = "戶號不可為空";
-  } else if (!values.house_id.match("^[a-zA-Z]\\d{7}$")) {
-    errors.house_id = "戶號由英文字母為首+7位數字, 如: F1234567";
+  } else if (!values.house_id.match("^[a-zA-Z][a-zA-Z|12]\\d{6}$")) {
+    errors.house_id = "戶號由英數字8位組成, 如: F1234567 或 FF123456";
   }
 
   if (values.email) {
