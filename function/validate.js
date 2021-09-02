@@ -1,5 +1,5 @@
 export default async function validate(values, bank_len, parent_gender) {
-  console.log(parent_gender);
+  // console.log(parent_gender);
   // console.log(`validate ${bank_id}`);
   const errors = {};
   if (!values.id) {
@@ -125,7 +125,7 @@ export async function adminValidate(values, bank_len, born) {
   }
 
   if (values.reason) {
-    console.log(values.reason);
+    // console.log(values.reason);
     if (values.reason == 1) {
       if (born.substr(1, 2) < 90) {
         errors.reason = "申請人年齡需小於20歲";

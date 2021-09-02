@@ -264,14 +264,14 @@ export default function Home() {
     {
       size: 6,
       field: (
-        <IconButton
-          color="primary"
-          aria-label="upload picture"
-          component="span"
+        <Button
+          variant="contained"
+          color="secondary"
+          startIcon={<ImageSearchIcon style={{ fontSize: 30 }} />}
           onClick={handleOpen}
         >
-          <ImageSearchIcon style={{ fontSize: 30 }} />
-        </IconButton>
+          戶號如何查
+        </Button>
       ),
     },
     {
@@ -490,10 +490,16 @@ export default function Home() {
                         </Typography>
                          */}
                         <Typography>
-                          1.
+                          1. 於9月11日前登錄者，將於9月17日前核發。
+                        </Typography>
+                        <Typography>
+                          2. 另於9月30日前登錄者，將於10月11日前核發。
+                        </Typography>
+                        <Typography>
+                          3.
                           受理申請時間：自110年9月1日起至110年9月30日止(逾期不受理)。
                         </Typography>
-                        <Typography>2. 洽詢專線：</Typography>
+                        <Typography>4. 洽詢專線：</Typography>
                         <Typography className={classes.indent}>
                           1. 金城鎮公所082-325057；金城戶政所082-324283 <br />{" "}
                           2. 金湖鎮公所082-332528；金湖戶政所082-330790 <br />{" "}
@@ -504,7 +510,7 @@ export default function Home() {
                           7. 縣府1999或民政處082-325640
                         </Typography>
                         <Typography>
-                          3. 申請方式請參閱作業要點{" "}
+                          5. 申請方式請參閱作業要點{" "}
                           <a href="https://reurl.cc/dGRoKD" target="_blank">
                             https://reurl.cc/dGRoKD
                           </a>
