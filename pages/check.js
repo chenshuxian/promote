@@ -222,7 +222,7 @@ export default function Home() {
                         startIcon={<HelpIcon />}
                         onClick={() =>
                           window.open(
-                            "https://ws.kinmen.gov.tw/Download.ashx?u=LzAwMS9VcGxvYWQvMzA1L3JlbGZpbGUvMTE5NTkvNzA2MzQzLzU5M2IwZDhiLTg0ZjYtNDRlMS1hZTVlLWM5M2JhOWFkYjA0Ni5wZGY%3D&n=5ZWP6IiH562ULnBkZg%3D%3D",
+                            "https://ws.kinmen.gov.tw/Download.ashx?u=LzAwMS9VcGxvYWQvMzA1L3JlbGZpbGUvMTE5NTkvNzA2MzQzL2YwZDA4ODVjLTdlNWItNDlhOS1hMzRkLTg4ZjYwYjMxYTQzNi5wZGY%3d&n=57ST5Zuw6YeR5bi46KaL5ZWP6aGMLnBkZg%3d%3d",
                             "_blank"
                           )
                         }
