@@ -15,7 +15,8 @@ export default function adminField(
   setRelation,
   other,
   setOther,
-  buttonDisable
+  buttonDisable,
+  house_id
 ) {
   return [
     {
@@ -25,7 +26,7 @@ export default function adminField(
     },
     {
       size: 12,
-      md: 6,
+      md: 4,
       field: (
         <TextField
           label="申請人身分證"
@@ -43,7 +44,7 @@ export default function adminField(
     },
     {
       size: 12,
-      md: 6,
+      md: 4,
       field: (
         <TextField
           label="編碼序號"
@@ -57,6 +58,21 @@ export default function adminField(
           inputProps={{
             maxLength: 7,
           }}
+        />
+      ),
+    },
+    {
+      size: 12,
+      md: 4,
+      field: (
+        <TextField
+          label="戶號"
+          name="house_id"
+          margin="none"
+          placeholder="由系統自動帶入"
+          variant="outlined"
+          value={house_id}
+          disabled
         />
       ),
     },
@@ -184,6 +200,7 @@ export default function adminField(
       field: (
         <TextField
           label="銀行帳號"
+          size="medium"
           name="bank_account"
           margin="none"
           required={true}

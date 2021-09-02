@@ -208,7 +208,7 @@ export default async function handler(req, res) {
       // 管理端取得客戶生日及姓名進行核查
       // 先判斷使用者狀態 > 1以上都不可以進行處理
       case "getUserProfile": {
-        let have, name, born, addr, file_number;
+        let have, name, born, addr, file_number, house_id;
         status = 99;
         try {
           const user = await prisma.apply.findUnique({
@@ -223,6 +223,7 @@ export default async function handler(req, res) {
               chun: true,
               lin: true,
               town: true,
+              house_id: true,
               file_number: true,
             },
           });
@@ -234,6 +235,7 @@ export default async function handler(req, res) {
             name = user.name;
             born = user.born;
             file_number = user.file_number;
+            house_id = user.house_id;
             if (user.lin == "0") {
               // 陸配
               addr = user.addr;
@@ -250,6 +252,7 @@ export default async function handler(req, res) {
             born,
             addr,
             file_number,
+            house_id,
           });
         } catch (err) {
           console.log(err);

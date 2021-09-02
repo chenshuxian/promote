@@ -106,6 +106,7 @@ export default function addForm(props) {
   const [name, setName] = useState("");
   const [born, setBorn] = useState("");
   const [addr, setAddr] = useState("");
+  const [houseId, setHouseId] = useState("");
   const [open, setOpen] = useState(false);
   const [relation, setRelation] = useState(true);
   const [other, setOther] = useState(true);
@@ -151,6 +152,7 @@ export default function addForm(props) {
     setName("");
     setBorn("");
     setAddr("");
+    setHouseId("");
     setBank_len(12);
   };
   /*
@@ -275,6 +277,7 @@ export default function addForm(props) {
           setBorn(data.born);
           setName(data.name);
           setAddr(data.addr);
+          setHouseId(data.house_id);
           setButtonDisable(false);
         } else {
           setOpen(true);
@@ -367,7 +370,8 @@ export default function addForm(props) {
     setRelation,
     other,
     setOther,
-    buttonDisable
+    buttonDisable,
+    houseId
   );
 
   return (

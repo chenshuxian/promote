@@ -110,7 +110,7 @@ export async function adminValidate(values, bank_len, born) {
   }
 
   if (values.reason) {
-    console.log(values.reason);
+    // console.log(values.reason);
 
     if (values.reason == 1) {
       if (born.substr(0, 3) < 90) {
