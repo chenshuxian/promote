@@ -99,6 +99,7 @@ export default async function handler(req, res) {
 
         if (update.count) {
           return res.status(200).json({
+            success: true,
             title,
             msg,
             update,
@@ -123,6 +124,7 @@ export default async function handler(req, res) {
     } else {
       //驗證失敗
       return res.status(200).json({
+        success: false,
         title: "申請驗證失敗、戶號、生日需正確",
         msg: errMsg.toString() + "驗證失敗",
       });

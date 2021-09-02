@@ -229,6 +229,11 @@ export default function Home() {
     post(process.env.NEXT_PUBLIC_API_APPLY_URL, formValues)
       .then((data) => {
         // 修改成功
+        if (data.success) {
+          document.getElementById("reset").click();
+          setBank_len(12);
+        }
+
         setTitle(data.title);
         setContent(data.msg);
         setOpen(true);
@@ -241,7 +246,7 @@ export default function Home() {
       size: 12,
       field: (
         <Typography variant="h5" color="secondary">
-          線上申請表
+          線上申請表(* 為必填欄位)
         </Typography>
       ),
     },
@@ -365,8 +370,14 @@ export default function Home() {
           formControlProps={{ margin: "none" }}
           variant="outlined"
           onClick={(event) => {
-            let len = event.target.value === "005" ? 12 : 14;
-            setBank_len(len);
+            let val = event.target.value;
+            console.log("bank_id" + val);
+            let len = val === "005" ? 12 : 14;
+            if (val == "0" || val === undefined) {
+              setBank_len(bank_len);
+            } else {
+              setBank_len(len);
+            }
             // setBank_id(event.target.value);
           }}
         >
@@ -490,16 +501,10 @@ export default function Home() {
                         </Typography>
                          */}
                         <Typography>
-                          1. 於9月11日前登錄者，將於9月17日前核發。
-                        </Typography>
-                        <Typography>
-                          2. 另於9月30日前登錄者，將於10月11日前核發。
-                        </Typography>
-                        <Typography>
-                          3.
+                          1.
                           受理申請時間：自110年9月1日起至110年9月30日止(逾期不受理)。
                         </Typography>
-                        <Typography>4. 洽詢專線：</Typography>
+                        <Typography>2. 洽詢專線：</Typography>
                         <Typography className={classes.indent}>
                           1. 金城鎮公所082-325057；金城戶政所082-324283 <br />{" "}
                           2. 金湖鎮公所082-332528；金湖戶政所082-330790 <br />{" "}
@@ -510,7 +515,7 @@ export default function Home() {
                           7. 縣府1999或民政處082-325640
                         </Typography>
                         <Typography>
-                          5. 申請方式請參閱作業要點{" "}
+                          3. 申請方式請參閱作業要點{" "}
                           <a href="https://reurl.cc/dGRoKD" target="_blank">
                             https://reurl.cc/dGRoKD
                           </a>
@@ -557,6 +562,7 @@ export default function Home() {
                                       <Grid item>
                                         <Button
                                           type="button"
+                                          id="reset"
                                           variant="contained"
                                           onClick={form.reset}
                                           disabled={submitting || pristine}

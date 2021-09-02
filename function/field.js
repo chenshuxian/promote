@@ -161,8 +161,14 @@ export default function adminField(
           formControlProps={{ margin: "none" }}
           variant="outlined"
           onClick={(event) => {
-            let len = event.target.value === "005" ? 12 : 14;
-            setBank_len(len);
+            let val = event.target.value;
+            let len = val === "005" ? 12 : 14;
+            if (val == "0" || val === undefined) {
+              setBank_len(bank_len);
+            } else {
+              setBank_len(len);
+            }
+
             // setBank_id(event.target.value);
           }}
         >

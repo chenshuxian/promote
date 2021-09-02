@@ -25,7 +25,7 @@ const checkFields = [
     size: 12,
     field: (
       <Typography variant="h5" color="secondary">
-        當前僅提供查詢服務，線上申請將於9月6日正式上線
+        線上查詢服務
       </Typography>
     ),
   },
@@ -77,7 +77,7 @@ const validate = (values) => {
   const errors = {};
   if (!values.id) {
     errors.id = "身分證不可為空";
-  } else if (!values.id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
+  } else if (!values.id.match("^[a-zA-Z][a-zA-Z0-9]\\d{8}$")) {
     errors.id = "身分證格式錯誤, 本國W123456789, 國外AB12345678";
   }
 

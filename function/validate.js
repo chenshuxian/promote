@@ -4,7 +4,7 @@ export default async function validate(values, bank_len, parent_gender) {
   const errors = {};
   if (!values.id) {
     errors.id = "身分證不可為空";
-  } else if (!values.id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
+  } else if (!values.id.match("^[a-zA-Z][a-zA-Z0-9]\\d{8}$")) {
     errors.id = "身分證格式錯誤, 本國W123456789, 國外AB12345678";
   }
 
@@ -68,7 +68,7 @@ export async function adminValidate(values, bank_len, born) {
   const errors = {};
   if (!values.id) {
     errors.id = "身分證不可為空";
-  } else if (!values.id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
+  } else if (!values.id.match("^[a-zA-Z][a-zA-Z0-9]\\d{8}$")) {
     errors.id = "身分證格式錯誤, 本國W123456789, 國外AB12345678";
   }
 
@@ -79,23 +79,8 @@ export async function adminValidate(values, bank_len, born) {
   }
 
   if (values.parent_id) {
-    // 父親
-    if (values.relationship == 2) {
-      // console.log(values.relationship + " " + values.parent_id);
-      // console.log(values.parent_id.substr(1, 1));
-      if (values.parent_id.substr(1, 1) !== "1") {
-        errors.parent_id = "關係人為父親時身分證第二位應為1";
-      } else if (!values.parent_id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
-        errors.parent_id = "身分證格式錯誤, 本國W123456789, 國外AB12345678";
-      }
-    }
-    // 母親
-    if (values.relationship == 3) {
-      if (values.parent_id.substr(1, 1) !== "2") {
-        errors.parent_id = "關係人為母親時身分證第二位應為2";
-      } else if (!values.parent_id.match("^[a-zA-Z][A-Z|12]\\d{8}$")) {
-        errors.parent_id = "身分證格式錯誤, 本國W123456789, 國外AB12345678";
-      }
+    if (!values.parent_id.match("^[a-zA-Z][a-zA-Z0-9]\\d{8}$")) {
+      errors.parent_id = "身分證格式錯誤, 本國W123456789, 國外AB12345678";
     }
   }
 
@@ -125,9 +110,10 @@ export async function adminValidate(values, bank_len, born) {
   }
 
   if (values.reason) {
-    // console.log(values.reason);
+    console.log(values.reason);
+
     if (values.reason == 1) {
-      if (born.substr(1, 2) < 90) {
+      if (born.substr(0, 3) < 90) {
         errors.reason = "申請人年齡需小於20歲";
       }
     }

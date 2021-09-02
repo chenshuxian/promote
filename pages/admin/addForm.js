@@ -146,6 +146,13 @@ export default function addForm(props) {
       </Grid>
     );
   }
+
+  const clearField = () => {
+    setName("");
+    setBorn("");
+    setAddr("");
+    setBank_len(12);
+  };
   /*
   申請處理
   狀態由0改為2申請中
@@ -165,6 +172,7 @@ export default function addForm(props) {
         document.getElementById("reset").click();
 
         // alert(data.msg);
+        clearField();
         setTitle(data.title);
         setContent(<Typography variant="h6">{data.msg}</Typography>);
         setOpen(true);
@@ -410,7 +418,10 @@ export default function addForm(props) {
                       type="button"
                       variant="contained"
                       id="reset"
-                      onClick={form.reset}
+                      onClick={() => {
+                        clearField();
+                        form.reset();
+                      }}
                       disabled={submitting || pristine}
                     >
                       清除
