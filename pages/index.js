@@ -20,6 +20,7 @@ import validate from "../function/validate";
 import { STATUS } from "../function/common";
 import km from "../public/newIcon.jpg";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import postData from "../src/post";
 
 import {
   Typography,
@@ -64,11 +65,31 @@ export default function Home() {
   const [title, setTitle] = useState("");
   const [checked, setChecked] = useState("none");
   const [nameCheck, setNameCheck] = useState("");
-  const [buttonDisable, setButtonDisable] = useState(true);
+  const [buttonDisable, setButtonDisable] = useState(false);
   const [id, setID] = useState("");
+  const [count, setCount] = useState("");
   const [formValues, setFormValues] = useState("");
   const [bank_len, setBank_len] = useState(12);
   const [clearField, setClearField] = useState(false);
+
+  React.useEffect(() => {
+    /* 取得 data */
+    postData(process.env.NEXT_PUBLIC_API_COUNT_URL)
+      .then((data) => {
+        setCount(data.count.count);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    postData(process.env.NEXT_PUBLIC_API_ST_URL)
+      .then((data) => {
+        setStatistics(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const handleOpen = () => {
     setContent(<Image src={houseId} />);
@@ -480,26 +501,15 @@ export default function Home() {
                       </Grid>
                       <Grid item xs={10}>
                         <Typography variant="h6">
+                          累計點閱次數 : {count}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={10}>
+                        <Typography variant="h6">
                           金門縣因應新冠疫情紓困金說明:{" "}
                         </Typography>
                       </Grid>
                       <Grid item xs={10}>
-                        {/* <Typography>
-                          1.
-                          作業基準日110年7月20日設籍金門、外(陸)籍配偶居留證持證地址為金門縣者(不含戶政事務所依法將其戶籍至戶政事務所者)。
-                        </Typography>
-                        <Typography>
-                          2. 發放金額為每人新臺幣5,000元整。
-                        </Typography>
-                        <Typography>
-                          3.
-                          採申請制，須持有土地銀行、郵局及金門信用合作社等其中一家金融帳戶。
-                        </Typography>
-                        <Typography>
-                          4.
-                          線上申請僅受理匯入本人金融帳戶，餘請循紙本或郵寄方式申請。
-                        </Typography>
-                         */}
                         <Typography>
                           1.
                           受理申請時間：自110年9月1日起至110年9月30日止(逾期不受理)。
@@ -532,8 +542,6 @@ export default function Home() {
                           buttonDisable={buttonDisable}
                           initialValues={{
                             bank_id: "005",
-                            notice1: true,
-                            notice2: true,
                           }}
                           validate={(values) => {
                             return validate(values, bank_len);

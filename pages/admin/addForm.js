@@ -268,12 +268,15 @@ export default function addForm(props) {
   const handleNyClose = () => {
     setNyOpen(false);
   };
+
+  // 確認個人資料
   const profile = (event) => {
     const data = { api: "getUserProfile", q: { id: event.target.value } };
     postData(process.env.NEXT_PUBLIC_API_USER_URL, data)
       .then((data) => {
-        if (data.status === 0) {
-          // 未申請
+        console.log("check profile :" + user.user);
+        if (data.status === 0 || user.user.roles !== 1) {
+          // 未申請，可以進行申請
           setBorn(data.born);
           setName(data.name);
           setAddr(data.addr);
@@ -318,6 +321,7 @@ export default function addForm(props) {
       .catch((error) => console.error(error));
   };
 
+  // 確認檔案
   const checkFileNum = (event) => {
     const data = {
       api: "checkFileNumber",
@@ -326,7 +330,7 @@ export default function addForm(props) {
     postData(process.env.NEXT_PUBLIC_API_USER_URL, data)
       .then((data) => {
         // 確認檔案序號是否已經存在表中
-        if (data.already) {
+        if (user.user.roles == 1 && data.already) {
           console.log("filenumber");
           setOpen(true);
           setFileDisable(true);

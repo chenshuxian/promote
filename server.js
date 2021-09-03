@@ -3,6 +3,7 @@ let FileStreamRotator = require("file-stream-rotator");
 const express = require("express");
 const next = require("next");
 const fs = require("fs");
+const url = require("url");
 var morgan = require("morgan");
 var path = require("path");
 
@@ -13,6 +14,11 @@ const handle = app.getRequestHandler();
 
 const http = require("http");
 const https = require("https");
+
+const { PrismaClient, PrismaErrors } = require("@prisma/client");
+const prisma = new PrismaClient({
+  errorFormat: "minimal",
+});
 
 var options = {
   key: fs.readFileSync("./sslkey/final/5000.kinmen.gov.tw.key"),
@@ -38,7 +44,31 @@ app.prepare().then(() => {
   // setup the logger
   app.use(morgan("combined", { stream: accessLogStream }));
 
-  app.all("*", (req, res) => {
+  app.all("*", async (req, res) => {
+    const reqUrl = url.parse(req.url);
+    const urlPath = reqUrl.pathname;
+    if (urlPath === "/" || urlPath === "/index") {
+      // 寫入登入人數
+      try {
+        const count = await prisma.pv.update({
+          where: {
+            id: 1,
+          },
+          data: {
+            count: {
+              increment: 1,
+            },
+            update_time: new Date(),
+          },
+        });
+        console.log("pv:" + JSON.stringify(count));
+      } catch (err) {
+        console.log(err);
+      }
+
+      console.log("pathName: " + urlPath);
+    }
+
     return handle(req, res);
   });
 

@@ -23,7 +23,7 @@ export default async function validate(values, bank_len, parent_gender) {
   }
   if (!values.bank_name) {
     errors.bank_name = "銀行戶名不可為空";
-  } else if (!values.bank_name.match("^[\u4e00-\u9fa5]+$")) {
+  } else if (!values.bank_name.trim().match("^[\u3400-\u9fa5]+$")) {
     errors.bank_name = "銀行戶名只能輸入中文";
   }
 
@@ -46,8 +46,9 @@ export default async function validate(values, bank_len, parent_gender) {
   }
   if (!values.house_id) {
     errors.house_id = "戶號不可為空";
-  } else if (!values.house_id.match("^[a-zA-Z][a-zA-Z0-9]\\d{6}$")) {
-    errors.house_id = "戶號由英數字8位組成, 如: F1234567 或 FF123456";
+  } else if (!values.house_id.match("^[a-zA-Z][a-zA-Z0-9]+$")) {
+    errors.house_id =
+      "戶號由英數字8位組成, 如: F1234567 或 FF123456 或 F1B38G00";
   }
 
   if (values.email) {
@@ -85,7 +86,7 @@ export async function adminValidate(values, bank_len, born) {
   }
 
   if (values.parent_name) {
-    if (!values.parent_name.match("^[\u4e00-\u9fa5]+$")) {
+    if (!values.parent_name.trim().match("^[\u3400-\u9fa5]+$")) {
       errors.parent_name = "姓名只能輸入中文";
     }
   }

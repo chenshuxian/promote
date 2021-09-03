@@ -136,7 +136,7 @@ export default async function handler(req, res) {
       }
 
       case "checkName": {
-        let msg = "銀行戶名必預與申請人相同";
+        let msg = "銀行戶名必須與申請人相同";
         let is_same = 0;
         let same;
         try {
@@ -163,10 +163,10 @@ export default async function handler(req, res) {
           same = Object.keys(user).length;
           // 戶名和申請人相同
           if (same) {
-            msg = "申請者與銀行戶名相同";
+            msg = "銀行戶名與申請人相同";
             is_same = 1;
             // console.log("update" + update);
-            msg = "申請人與銀行戶同相同";
+            //msg = "申請人與銀行戶同相同";
           } else {
             is_same = 0;
           }

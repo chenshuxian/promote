@@ -65,7 +65,7 @@ export default function PrivateModal(props) {
           隱私權公告
         </DialogTitle>
         <DialogContent dividers>
-          <Typography gutterBottom>生效日期：110年9月6日</Typography>
+          {/* <Typography gutterBottom>生效日期：110年9月3日</Typography> */}
           <Typography gutterBottom>
             親愛的朋友，感謝您蒞臨金門縣紓困線上申請網（以下簡稱本網站），您個人的隱私權，本網站予以尊重並加以保護。為了幫助您瞭解本網站如何蒐集、處理、利用及保護您所提供的個人資訊，請您務必詳細閱讀下列資訊：
           </Typography>
