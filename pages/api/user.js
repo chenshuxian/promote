@@ -145,7 +145,7 @@ export default async function handler(req, res) {
               AND: [
                 {
                   name: {
-                    equals: q.name,
+                    equals: q.name.trim(),
                   },
                 },
                 {

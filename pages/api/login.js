@@ -47,6 +47,7 @@ export default withSession(async (req, res) => {
               roles: user[0].roles,
               is_fix_pw: user[0].is_fix_pw,
               town: user[0].town,
+              name: user[0].name
             });
             await req.session.save();
             return res.status(200).send(user);

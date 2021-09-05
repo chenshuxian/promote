@@ -25,6 +25,20 @@ export const STATUSICON = {
   99: <CancelIcon color="secondary" style={{ fontSize: 50 }} />,
 };
 
+export const TODAY = () => {
+  const today = DATE();
+  let y, m, d;
+  y = today.getFullYear();
+  m = today.getMonth() + 1;
+  d = today.getDate();
+
+  // 9 = 09
+  m = m < 10 ? "0" + m : m;
+  d = d < 10 ? "0" + d : d;
+
+  return `${y}-${m}-${d}`;
+};
+
 export const DATE = () => new Date(Date.now() + 8 * 60 * 60 * 1000);
 
 export const GETIP = (req) => {

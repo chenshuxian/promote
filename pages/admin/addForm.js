@@ -102,7 +102,7 @@ const townId = {
 
 export default function addForm(props) {
   const classes = useStyles();
-  const [bank_len, setBank_len] = useState(12);
+  const [bank_len, setBank_len] = useState(14);
   const [name, setName] = useState("");
   const [born, setBorn] = useState("");
   const [addr, setAddr] = useState("");
@@ -153,7 +153,7 @@ export default function addForm(props) {
     setBorn("");
     setAddr("");
     setHouseId("");
-    setBank_len(12);
+    setBank_len(14);
   };
   /*
   申請處理
@@ -283,8 +283,8 @@ export default function addForm(props) {
           setHouseId(data.house_id);
           setButtonDisable(false);
         } else {
-          setOpen(true);
           setButtonDisable(true);
+          setOpen(true);
           setTitle("申請人資料核驗");
           let content = (
             <>
@@ -402,7 +402,7 @@ export default function addForm(props) {
         <Form
           onSubmit={onSubmit}
           initialValues={{
-            bank_id: "005",
+            bank_id: "700",
             relationship: "1",
             reason: "0",
             file_number: townId[user.user.town],

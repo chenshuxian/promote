@@ -1,32 +1,79 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Layout from "./Layout";
-import { Grid, Button } from "@material-ui/core";
-import { useWindowSize } from "../../function/common";
+import { Grid, Button, Typography } from "@material-ui/core";
 import useUser from "../../lib/useUser";
-import IconButton from "@material-ui/core/IconButton";
 import TextField from "@material-ui/core/TextField";
 import { DataGrid } from "@mui/x-data-grid";
-import ClearIcon from "@material-ui/icons/Clear";
-import SearchIcon from "@material-ui/icons/Search";
 import { createTheme } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/styles";
-import withSession from "../../lib/session";
+import { TODAY } from "../../function/common";
 import DescriptionIcon from "@material-ui/icons/Description";
 import postData from "../../src/post";
-import Footer from "../components/Footer";
+import { AlternateEmail } from "@material-ui/icons";
+import { common } from "@material-ui/core/colors";
 function escapeRegExp(value) {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
 
 const columns = [
-  { field: "id", headerName: "身分證", width: 150 },
-  { field: "name", headerName: "姓名", width: 150 },
-  { field: "parent_id", headerName: "監護人姓名", width: 150 },
-  { field: "parent_name", headerName: "監護人身分證", width: 180 },
-  { field: "bank_id", headerName: "銀行代號", width: 150 },
+  { field: "file_number", headerName: "編碼序號", width: 120 },
+  { field: "id", headerName: "身分證", width: 120 },
+  { field: "name", headerName: "姓名", width: 110 },
+  {
+    field: "town",
+    headerName: "鄉鎮",
+    width: 110,
+    valueFormatter: (params) => {
+      const status = {
+        1: "金城",
+        2: "金湖",
+        3: "金沙",
+        4: "金寧",
+        5: "烈嶼",
+        6: "烏坵",
+      };
+      return status[params.value];
+    },
+  },
+  { field: "parent_id", headerName: "代理(領)人姓名", width: 120 },
+  { field: "parent_name", headerName: "代理(領)人身分證", width: 150 },
+  { field: "bank_id", headerName: "銀行代號", width: 130 },
   { field: "bank_account", headerName: "銀行帳號", width: 150 },
-  { field: "phone", headerName: "連絡電話", width: 150 },
-  { field: "update_time", headerName: "申報時間", width: 150 },
+  {
+    field: "phone",
+    headerName: "連絡電話",
+    width: 150,
+  },
+  {
+    field: "relationship",
+    headerName: "與申請人關係",
+    width: 150,
+    valueFormatter: (params) => {
+      const status = {
+        1: "本人",
+        2: "父親",
+        3: "母親",
+        4: "監護人",
+        5: "其他",
+      };
+      return status[params.value];
+    },
+  },
+  {
+    field: "status",
+    headerName: "狀態",
+    width: 150,
+    valueFormatter: (params) => {
+      const status = {
+        0: "未申請",
+        1: "申請中",
+        2: "已審核",
+        3: "已撥款",
+        4: "撥款失敗",
+      };
+      return status[params.value];
+    },
+  },
 ];
 
 const defaultTheme = createTheme();
@@ -59,19 +106,73 @@ const useStyles = makeStyles(
   { defaultTheme }
 );
 
+const getData = async (sdate, edate, setRows, setStatistics) => {
+  const data = { sdate, edate };
+  postData(process.env.NEXT_PUBLIC_API_DG_URL, data)
+    .then((data) => {
+      setRows(data.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  postData(process.env.NEXT_PUBLIC_API_ST_URL, data)
+    .then((data) => {
+      setStatistics(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+const genReport = (sdate, edate) => {
+  const data = { sdate, edate };
+  postData(process.env.NEXT_PUBLIC_API_DG_URL, data)
+    .then((data) => {
+      setRows(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 export default function DataView() {
+  const today = TODAY();
   const classes = useStyles();
-  const [rows, setRows] = React.useState([{}]);
+  const [rows, setRows] = useState([{ id: "", name: "" }]);
+  const [sdate, setSdate] = useState("2021-09-03");
+  const [edate, setEdate] = useState(today);
+  const [statistics, setStatistics] = useState({
+    t: 0,
+    u: 0,
+    a: 0,
+    f: 0,
+    p: 0,
+  });
   const { user } = useUser({ redirectTo: "/admin/login" });
+
   React.useEffect(() => {
+    /* 在這裡做 postData */
     postData(process.env.NEXT_PUBLIC_API_DG_URL)
       .then((data) => {
-        setRows(data);
+        setRows(data.data);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [rows]);
+
+    postData(process.env.NEXT_PUBLIC_API_ST_URL)
+      .then((data) => {
+        setStatistics(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const handlePageChange = (nextPage) => {
+    console.log("pages:" + nextPage);
+  };
 
   if (!user || user.isLoggedIn === false) {
     return (
@@ -91,15 +192,34 @@ export default function DataView() {
                 <Grid
                   container
                   spacing={2}
-                  justifyContent="flex-end"
+                  justifyContent="space-between"
                   alignItems="center"
                 >
+                  <Grid item>
+                    <Typography>總人數: {statistics.t}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography>未申請: {statistics.u}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography>已申請: {statistics.a}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography>已審核: {statistics.f}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography>已撥款: {statistics.p}</Typography>
+                  </Grid>
                   <Grid item>
                     <TextField
                       id="sdate"
                       type="date"
                       label="起始日"
-                      defaultValue={new Date()}
+                      defaultValue={sdate}
+                      onChange={(e) => {
+                        setSdate(e.target.value);
+                        getData(e.target.value, edate, setRows, setStatistics);
+                      }}
                       className={classes.textField}
                       InputLabelProps={{
                         shrink: true,
@@ -111,8 +231,17 @@ export default function DataView() {
                       id="edate"
                       type="date"
                       label="結束始日"
-                      defaultValue={new Date()}
+                      defaultValue={edate}
                       className={classes.textField}
+                      onChange={async (e) => {
+                        await setEdate(e.target.value);
+                        await getData(
+                          sdate,
+                          e.target.value,
+                          setRows,
+                          setStatistics
+                        );
+                      }}
                       InputLabelProps={{
                         shrink: true,
                       }}
@@ -122,6 +251,7 @@ export default function DataView() {
                     <Button
                       variant="contained"
                       color="primary"
+                      // onClick={genReport(sDate, eDate)}
                       startIcon={<DescriptionIcon />}
                     >
                       報表下載
@@ -135,10 +265,10 @@ export default function DataView() {
                 <DataGrid
                   rows={rows}
                   columns={columns}
-                  pageSize={5}
-                  rowsPerPageOptions={[5]}
-                  checkboxSelection
-                  disableSelectionOnClick
+                  pageSize={100}
+                  pagination
+                  rowHeight={40}
+                  onPageChange={handlePageChange}
                 />
               </div>
             </Grid>

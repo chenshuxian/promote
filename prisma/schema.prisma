@@ -23,9 +23,9 @@ model apply {
   ip           Int?      @db.UnsignedInt
   town         Int       @default(1)
   chun         String    @default("null") @db.VarChar(45)
-  lin          Int?      @default(1)
+  lin          Int?      @default(0)
   addr         String    @default("null") @db.VarChar(200)
-  pay_date     String    @default("0") @db.VarChar(45)
+  pay_date     String    @default("Null") @db.VarChar(40)
   editor       String    @default("null") @db.VarChar(45)
   reason       Int       @default(1)
   relationship Int       @default(1)
@@ -34,7 +34,6 @@ model apply {
   create_time  DateTime  @default(now()) @db.Timestamp(0)
   update_time  DateTime? @db.Timestamp(0)
   file_number  Int       @default(-1)
-  other        String?   @db.VarChar(45)
 }
 
 model users {
@@ -55,7 +54,7 @@ model test {
 }
 
 model pv {
-  id          Int       @id @default(autoincrement())
-  count       Int?      @default(20000)
+  id          Int       @id
+  count       Int?
   update_time DateTime? @db.Timestamp(0)
 }
