@@ -38,6 +38,7 @@ const columns = [
   { field: "parent_name", headerName: "代理(領)人身分證", width: 150 },
   { field: "bank_id", headerName: "銀行代號", width: 130 },
   { field: "bank_account", headerName: "銀行帳號", width: 150 },
+  { field: "editor", headerName: "建檔人", width: 150 },
   {
     field: "phone",
     headerName: "連絡電話",
