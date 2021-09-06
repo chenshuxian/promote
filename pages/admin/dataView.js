@@ -127,12 +127,27 @@ const getData = async (sdate, edate, setRows, setStatistics) => {
 
 const genReport = (sdate, edate) => {
   const data = { sdate, edate };
-  postData(process.env.NEXT_PUBLIC_API_DG_URL, data)
-    .then((data) => {
-      setRows(data);
+  fetch(process.env.NEXT_PUBLIC_API_XLS_URL, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "user-agent": "Mozilla/4.0 MDN Example",
+      "content-type": "application/json",
+    },
+  })
+    .then(function (response) {
+      return response.blob();
     })
-    .catch((err) => {
-      console.log(err);
+    .then(function (blob) {
+      const link = document.createElement("a");
+      link.style.display = "none";
+      link.href = URL.createObjectURL(blob);
+      link.download = "report.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      // 釋放的 URL 物件以及移除 a 標籤
+      URL.revokeObjectURL(link.href);
+      document.body.removeChild(link);
     });
 };
 
@@ -251,7 +266,9 @@ export default function DataView() {
                     <Button
                       variant="contained"
                       color="primary"
-                      // onClick={genReport(sDate, eDate)}
+                      onClick={() => {
+                        genReport(sdate, edate);
+                      }}
                       startIcon={<DescriptionIcon />}
                     >
                       報表下載

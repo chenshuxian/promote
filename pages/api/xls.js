@@ -1,4 +1,6 @@
 const XLSX = require("xlsx-style");
+const path = require("path");
+const fs = require("fs");
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 // 返回統計數據
 import { PrismaClient } from "@prisma/client";
@@ -7,6 +9,7 @@ import { getRange, getColAndRow, merge } from "../../lib/xlslibs";
 const prisma = new PrismaClient({
   errorFormat: "minimal",
 });
+import { genWhere } from "../../lib/sqllibs";
 
 // 日期
 let today = new Date();
@@ -24,60 +27,40 @@ let gov = {
   6: "烏坵鄉公所",
 };
 
-let townExId = {
-  1: "51",
-  2: "00",
-  3: "53",
-  4: "55",
-  5: "56",
-  6: "57",
+let govEN = {
+  1: "jc",
+  2: "jw",
+  3: "js",
+  4: "jn",
+  5: "lu",
+  6: "wq",
 };
 
-const common = async (town, bank, bank_id, sdate, edate, other = false) => {
-  let And = [
-    {
-      town: {
-        equals: town,
-      },
-    },
-    {
-      status: {
-        equals: 2,
-      },
-    },
-    {
-      bank_id: {
-        equals: bank_id,
-      },
-    },
-  ];
-
-  // 代領
+const common = async (
+  town,
+  bank,
+  bank_id,
+  sdate,
+  edate,
+  user,
+  other = false
+) => {
+  let where = genWhere(town, sdate, edate, user.roles);
+  where = where + ` and bank_id = ${bank_id}`;
+  // 取得代領
   if (other) {
-    And.push({
-      parent_id: {
-        not: "",
-      },
-    });
+    where = where + " and parent_id <> '' ";
   }
 
-  if (sdate) {
-    And.push({
-      update_time: {
-        gte: sdate + "T00:00:00.000Z",
-        lt: edate + "T23:59:59.000Z",
-      },
-    });
-  }
+  console.log("total: " + where);
 
   try {
-    const data = await prisma.apply.count({
-      where: {
-        AND: And,
-      },
-    });
-    // console.log(`${bank} : ${data}`);
-    return data;
+    const data = await prisma.$queryRaw(`
+      SELECT count(*) as total
+      FROM apply ${where} 
+    `);
+    // console.log("total data:" + data[0].total);
+    return data[0].total;
   } catch (err) {
     console.log(err);
   }
@@ -96,19 +79,19 @@ const setString = async (sheet) => {
 const totalData = async (town, user, sdate, edate) => {
   // 總數據
   //土地已審核總申請
-  const tudi = await common(town, "tudi", "005", sdate, edate);
+  const tudi = await common(town, "tudi", "005", sdate, edate, user);
   //郵局已審核總申請
-  const post = await common(town, "post", "700", sdate, edate);
+  const post = await common(town, "post", "700", sdate, edate, user);
   //郵局已審核總申請
-  const hez = await common(town, "hez", "224", sdate, edate);
+  const hez = await common(town, "hez", "224", sdate, edate, user);
 
   // 代為申請
   //土地已審核代申請
-  const tudi1 = await common(town, "tudi1", "005", sdate, edate, true);
+  const tudi1 = await common(town, "tudi1", "005", sdate, edate, user, true);
   //郵局已審核代申請
-  const post1 = await common(town, "post1", "700", sdate, edate, true);
+  const post1 = await common(town, "post1", "700", sdate, edate, user, true);
   //郵局已審核代申請
-  const hez1 = await common(town, "hez1", "224", sdate, edate, true);
+  const hez1 = await common(town, "hez1", "224", sdate, edate, user, true);
 
   //本人
   //土地已審核本申請
@@ -260,71 +243,28 @@ const formatData = async (_listData, town, user, statist) => {
 
 // 返回報表清單格式
 const reportData = async (town, user, sdate, edate) => {
-  let town1 = {};
+  // let where = `WHERE status = 2`;
 
-  //console.log(user.roles);
-  //查詢所有鄉鎮
+  // // 各鄉鎮用戶依file_number 取得各自資料
   // if (user.roles !== 3) {
-  //   town1 = {
-  //     town: {
-  //       equals: town,
-  //     },
-  //   };
+  //   if (twon === 2) {
+  //     // 金湖
+  //     where = where + ` and file_number < 5000000`;
+  //   } else {
+  //     where = where + ` and file_number like "${townExId[town]}%"`;
+  //   }
   // }
-
-  // let and = [
-  //   {
-  //     status: {
-  //       equals: 2,
-  //     },
-  //   },
-  //   town1,
-  // ];
-
+  // // 如果有時間加間
   // if (sdate) {
-  //   and.push({
-  //     update_time: {
-  //       gte: sdate + "T00:00:00.000Z",
-  //       lt: edate + "T23:59:59.000Z",
-  //     },
-  //   });
+  //   where =
+  //     where +
+  //     ` and (update_time BETWEEN "${sdate}T00:00:00.000Z" AND "${edate}T23:59:59.000Z")`;
   // }
+  let where = genWhere(town, sdate, edate, user.roles);
 
-  let where = `WHERE status = 2`;
-
-  // 各鄉鎮用戶依file_number 取得各自資料
-  if (user.roles !== 3) {
-    where = where + ` and file_number like "${townExId[town]}%"`;
-  }
-  // 如果有時間加間
-  if (sdate) {
-    where =
-      where +
-      ` and (update_time BETWEEN "${sdate}T00:00:00.000Z" AND "${edate}T23:59:59.000Z"`;
-  }
-
-  // console.log(`where :` + where);
+  console.log(`where :` + where);
 
   try {
-    // const data = await prisma.apply.findMany({
-    //   where: {
-    //     AND: and,
-    //   },
-    //   orderBy: {
-    //     file_number: "asc",
-    //   },
-    //   select: {
-    //     id: true,
-    //     name: true,
-    //     bank_account: true,
-    //     bank_id: true,
-    //     parent_id: true,
-    //     parent_name: true,
-    //     phone: true,
-    //     update_time: true,
-    //     file_number: true,
-    //   },
-    // });
     const data = await prisma.$queryRaw(`
       SELECT id,name,bank_account,bank_id,parent_id,parent_name,phone,update_time,file_number
       FROM apply ${where} ORDER BY file_number ASC
@@ -341,6 +281,7 @@ export default withSession(async (req, res) => {
   const user = req.session.get("user");
   const sdate = req.body.sdate;
   const edate = req.body.edate;
+  console.log(req.body.sdate);
 
   if (user) {
     // in a real world application you might read the user id from the session and then do a database request
@@ -397,28 +338,31 @@ export default withSession(async (req, res) => {
 
       // 生成 workbook
       const wb = {
-        SheetNames: ["sheet_1"],
+        SheetNames: ["total", "list"],
         Sheets: {
-          sheet_1: {
+          total: {
             "!ref": ref,
             ...output,
           },
+          list: Object.assign({}, reportOutput, { "!ref": reportRef }),
         },
       };
 
-      const wb2 = {
-        SheetNames: ["sheet_2"],
-        Sheets: {
-          sheet_2: Object.assign({}, reportOutput, { "!ref": reportRef }),
-        },
-      };
+      let fileName = `${sendday}_${govEN[town]}_report.xlsx`;
 
-      XLSX.writeFile(wb, `./report/${sendday}_${gov[town]}_total.xlsx`);
-      XLSX.writeFile(wb2, `./report/${sendday}_${gov[town]}_list.xlsx`);
+      XLSX.writeFile(wb, `./report/${fileName}`);
 
-      res.json({
-        data,
-      });
+      //檔案下載
+      var filePath = `./report/${fileName}`;
+      var stats = fs.statSync(filePath);
+      if (stats.isFile()) {
+        res.set({
+          "Content-Type": "application/octet-stream",
+          "Content-Disposition": "attachment; filename=" + fileName,
+          "Content-Length": stats.size,
+        });
+        fs.createReadStream(filePath).pipe(res);
+      }
     } catch (err) {
       console.log(err);
     }
