@@ -38,31 +38,6 @@ const useStyles = makeStyles({
 
 const Header = (props) => {
   const classes = useStyles();
-  let roles;
-  const { user } = useUser({ redirectTo: "/admin/login" });
-  if (!user || user.isLoggedIn === false) {
-    return (
-      <Paper className={classes.root}>
-        <Grid
-          container
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Image src={icon} width={200} height={80}></Image>
-          Loading
-          <Head>
-            <title>金門縣110年紓困申請</title>
-          </Head>
-        </Grid>
-      </Paper>
-    );
-  }
-
-  if (user) {
-    console.log("header" + user.user.roles);
-    roles = user.user.roles;
-  }
 
   return (
     <Paper className={classes.root}>
@@ -73,11 +48,7 @@ const Header = (props) => {
         alignItems="center"
       >
         <Image src={icon} width={200} height={80}></Image>
-        <Grid item>
-          {roles >= 2 ? props.dataViewButton : null}
-          {roles >= 2 ? props.addFormButton : null}
-          {props.headerButton}
-        </Grid>
+        <Grid item>{props.headerButton}</Grid>
         <Head>
           <title>金門縣110年紓困申請</title>
         </Head>
