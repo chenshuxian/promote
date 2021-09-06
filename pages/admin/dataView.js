@@ -9,11 +9,10 @@ import { makeStyles } from "@material-ui/styles";
 import { TODAY } from "../../function/common";
 import DescriptionIcon from "@material-ui/icons/Description";
 import postData from "../../src/post";
-import { AlternateEmail } from "@material-ui/icons";
-import { common } from "@material-ui/core/colors";
-function escapeRegExp(value) {
-  return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-}
+import ClearIcon from "@material-ui/icons/Clear";
+import SearchIcon from "@material-ui/icons/Search";
+import IconButton from "@material-ui/core/IconButton";
+import { CodeSharp } from "@material-ui/icons";
 
 const columns = [
   { field: "file_number", headerName: "編碼序號", width: 120 },
@@ -75,6 +74,9 @@ const columns = [
     },
   },
 ];
+function escapeRegExp(value) {
+  return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
 
 const defaultTheme = createTheme();
 const useStyles = makeStyles(
@@ -151,10 +153,42 @@ const genReport = (sdate, edate) => {
     });
 };
 
+function QuickSearchToolbar(props) {
+  const classes = useStyles();
+
+  return (
+    <div className={classes.root}>
+      <TextField
+        variant="standard"
+        value={props.value}
+        onChange={props.onChange}
+        placeholder="Search…"
+        className={classes.textField}
+        InputProps={{
+          startAdornment: <SearchIcon fontSize="small" />,
+          endAdornment: (
+            <IconButton
+              title="Clear"
+              aria-label="Clear"
+              size="small"
+              style={{ visibility: props.value ? "visible" : "hidden" }}
+              onClick={props.clearSearch}
+            >
+              <ClearIcon fontSize="small" />
+            </IconButton>
+          ),
+        }}
+      />
+    </div>
+  );
+}
+
 export default function DataView() {
   const today = TODAY();
   const classes = useStyles();
-  const [rows, setRows] = useState([{ id: "", name: "" }]);
+  const [rows, setRows] = useState([]);
+  const [initRows, setInitRows] = useState([]);
+  const [searchText, setSearchText] = React.useState("");
   const [sdate, setSdate] = useState("2021-09-03");
   const [edate, setEdate] = useState(today);
   const [statistics, setStatistics] = useState({
@@ -171,6 +205,7 @@ export default function DataView() {
     postData(process.env.NEXT_PUBLIC_API_DG_URL)
       .then((data) => {
         setRows(data.data);
+        setInitRows(data.data);
       })
       .catch((err) => {
         console.log(err);
@@ -187,6 +222,20 @@ export default function DataView() {
 
   const handlePageChange = (nextPage) => {
     console.log("pages:" + nextPage);
+  };
+
+  const requestSearch = (searchValue) => {
+    setSearchText(searchValue);
+    const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
+    // console.log(searchRegex);
+    const filteredRows = initRows.filter((row) => {
+      return Object.keys(row).some((field) => {
+        // console.log(row[field].toString());
+        let str = row[field] ? row[field].toString() : "test";
+        return searchRegex.test(str);
+      });
+    });
+    setRows(filteredRows);
   };
 
   if (!user || user.isLoggedIn === false) {
@@ -280,6 +329,14 @@ export default function DataView() {
             <Grid item>
               <div style={{ height: 500, width: "100%" }}>
                 <DataGrid
+                  components={{ Toolbar: QuickSearchToolbar }}
+                  componentsProps={{
+                    toolbar: {
+                      value: searchText,
+                      onChange: (event) => requestSearch(event.target.value),
+                      clearSearch: () => requestSearch(""),
+                    },
+                  }}
                   rows={rows}
                   columns={columns}
                   pageSize={100}
