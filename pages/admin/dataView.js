@@ -12,7 +12,9 @@ import postData from "../../src/post";
 import ClearIcon from "@material-ui/icons/Clear";
 import SearchIcon from "@material-ui/icons/Search";
 import IconButton from "@material-ui/core/IconButton";
-import { CodeSharp } from "@material-ui/icons";
+import Router from "next/router";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import { AlternateEmail, PagesSharp } from "@material-ui/icons";
 
 const columns = [
   { field: "file_number", headerName: "編碼序號", width: 120 },
@@ -108,6 +110,19 @@ const useStyles = makeStyles(
   }),
   { defaultTheme }
 );
+
+const pass = async () => {
+  //線上審核，線上申請且同名
+  let data = { api: "checkOnline" };
+  postData(process.env.NEXT_PUBLIC_API_USER_URL, data)
+    .then((data) => {
+      //console.log(data);
+      window.alert(data.msg);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 const getData = async (sdate, edate, setRows, setStatistics) => {
   const data = { sdate, edate };
@@ -236,6 +251,18 @@ export default function DataView() {
         return searchRegex.test(str);
       });
     });
+    console.log(filteredRows.length);
+    if (user.user.roles === 3 && filteredRows.length === 0) {
+      // console.log("server search");
+      let data = { id: searchValue };
+      postData(process.env.NEXT_PUBLIC_API_DG_URL, data)
+        .then((data) => {
+          setRows(data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
     setRows(filteredRows);
   };
 
@@ -323,6 +350,26 @@ export default function DataView() {
                     >
                       報表下載
                     </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      style={{ margin: 15 }}
+                      startIcon={<PersonAddIcon />}
+                      onClick={() => Router.push("/admin/addForm")}
+                    >
+                      新增
+                    </Button>
+                    {user.user.roles === 3 ? (
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        style={{ margin: 15 }}
+                        startIcon={<PersonAddIcon />}
+                        onClick={() => pass()}
+                      >
+                        線上審核
+                      </Button>
+                    ) : null}
                   </Grid>
                 </Grid>
               </form>

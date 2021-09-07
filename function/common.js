@@ -26,7 +26,7 @@ export const STATUSICON = {
 };
 
 export const TODAY = () => {
-  const today = DATE();
+  const today = new Date();
   let y, m, d;
   y = today.getFullYear();
   m = today.getMonth() + 1;

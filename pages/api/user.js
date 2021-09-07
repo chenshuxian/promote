@@ -39,6 +39,53 @@ export default async function handler(req, res) {
 
   if (req.method === "POST") {
     switch (api) {
+      case "checkOnline": {
+        try {
+          const user = await prisma.apply.updateMany({
+            where: {
+              AND: [
+                {
+                  status: {
+                    equals: 1,
+                  },
+                },
+                {
+                  editor: {
+                    equals: "",
+                  },
+                },
+                {
+                  is_same_name: {
+                    equals: 1,
+                  },
+                },
+              ],
+            },
+            data: {
+              status: 2,
+            },
+          });
+
+          console.log(`checkOnline: ${JSON.stringify(user)}`);
+
+          if (user) {
+            return res.status(200).send({
+              title: "線上審核",
+              msg: `今天線上審核總數 ${user.count}`,
+            });
+          }
+        } catch (err) {
+          console.log(err);
+          if (err.code === "P2002") {
+            return res.status(400).json({
+              title: "申請失敗",
+              msg: "此身分證已經被申請，請確認輸入是否有誤",
+            });
+          }
+          return res.status(400).send("建檔失敗");
+        }
+        break;
+      }
       // 確認使用者狀態
       case "checkStatus": {
         try {
@@ -292,17 +339,6 @@ export default async function handler(req, res) {
               other: req.body.other,
             },
           });
-
-          // 更新各別帳戶資料表
-          // const bank = await prisma[bankTable].create({
-          //   data: {
-          //     apply_id: q.id,
-          //     apply_name: q.name,
-          //     bank_account: q.bank_account,
-          //     parent_id: q.parent_id,
-          //     parent_name: q.parent_name,
-          //   },
-          // });
 
           // console.log(`update ${JSON.stringify(bank)}`);
 

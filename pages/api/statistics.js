@@ -30,12 +30,15 @@ const common = async (town, status, roles, sdate, edate, total = false) => {
   if (roles !== 3) {
     // 狀態為2以編碼查找,因為已審核以公所代碼查找
     if (status == 2) {
-      if (town == 2) {
-        // 金湖不一樣
-        where = where + ` and file_number < 5000000`;
-      } else {
-        where = where + ` and file_number like "${townExId[town]}%"`;
-      }
+      where =
+        where +
+        ` and (file_number BETWEEN ${townExId[town]}00000 and ${townExId[town]}99999)`;
+      // if (town == 2) {
+      //   // 金湖不一樣
+      //   where = where + ` and (file_number BETWEEN 0 and 5000000)`;
+      // } else {
+      //   where = where + ` and file_number like "${townExId[town]}% and file"`;
+      // }
     } else {
       // 其他已申請、已撥款都以鄉鎮
       where = where + ` and town=${town}`;

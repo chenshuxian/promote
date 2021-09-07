@@ -10,48 +10,21 @@ export default withSession(async (req, res) => {
   const user = req.session.get("user");
   const sdate = req.body.sdate;
   const edate = req.body.edate;
+  const id = req.body.id;
 
   if (user) {
-    // in a real world application you might read the user id from the session and then do a database request
-    // to get more information on the user if needed
-    // let town = {
-    //   town: {
-    //     equals: parseInt(user.town),
-    //   },
-    // };
-    // //console.log(user.roles);
-    // //查詢所有鄉鎮
-    // if (user.roles === 3) {
-    //   town = {};
-    // }
-
-    // let and = [
-    //   {
-    //     status: {
-    //       equals: 2,
-    //     },
-    //   },
-    //   town,
-    // ];
-
-    // if (sdate) {
-    //   and.push({
-    //     update_time: {
-    //       gte: sdate + "T00:00:00.000Z",
-    //       lt: edate + "T23:59:59.000Z",
-    //     },
-    //   });
-    // }
-
     let town = parseInt(user.town);
     let where = genWhere(town, sdate, edate, user.roles);
+    if (id) {
+      where = ` WHERE id="${id}"`;
+    }
     console.log("dg where :" + where);
     try {
       const data = await prisma.$queryRaw(`
       SELECT id,name,bank_account,bank_id,parent_id,parent_name,
       status,phone,update_time,relationship,file_number,town,status,
       editor
-      FROM apply ${where} limit 20000
+      FROM apply ${where} limit 10000
     `);
       // const data = await prisma.apply.findMany({
       //   where: {

@@ -5,8 +5,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Button } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import ListAltIcon from "@material-ui/icons/ListAlt";
-import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import Router from "next/router";
 import postData from "../../src/post";
 import useUser from "../../lib/useUser";
@@ -51,28 +49,6 @@ const Layout = ({ children }) => {
             <IconButton onClick={logout}>
               <ExitToAppIcon fontSize="large" />
             </IconButton>
-          }
-          dataViewButton={
-            <Button
-              variant="contained"
-              color="secondary"
-              style={{ margin: 15 }}
-              startIcon={<ListAltIcon />}
-              onClick={() => Router.push("/admin/dataView")}
-            >
-              報表清單
-            </Button>
-          }
-          addFormButton={
-            <Button
-              variant="contained"
-              color="secondary"
-              style={{ margin: 15 }}
-              startIcon={<PersonAddIcon />}
-              onClick={() => Router.push("/admin/addForm")}
-            >
-              新增申請
-            </Button>
           }
         />
       </Grid>

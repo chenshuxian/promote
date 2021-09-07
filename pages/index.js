@@ -137,6 +137,7 @@ export default function Home() {
     post(process.env.NEXT_PUBLIC_API_USER_URL, data)
       .then((data) => {
         if (data.is_same) {
+          setButtonDisable(false);
           setNameCheck(
             <>
               <CheckCircleOutlineIcon color="primary" />
@@ -144,6 +145,7 @@ export default function Home() {
             </>
           );
         } else {
+          setButtonDisable(true);
           setNameCheck(
             <>
               <CancelIcon color="error" />

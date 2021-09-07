@@ -18,6 +18,7 @@ import Router from "next/router";
 import AlterModal from "../components/modal";
 import NyModal from "../components/NyModal";
 import Layout from "./Layout";
+import ListAltIcon from "@material-ui/icons/ListAlt";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -379,26 +380,21 @@ export default function addForm(props) {
   );
 
   return (
-    // <Grid
-    //   container
-    //   justifyContent="center"
-    //   alignItems="center"
-    //   component="main"
-    //   className={classes.root}
-    //   direction="row"
-    //   spacing={2}
-    // >
-    //   <Grid item xs={12}>
-    //     <Header
-    //       headerButton={
-    //         <IconButton onClick={logout}>
-    //           <ExitToAppIcon fontSize="large" />
-    //         </IconButton>
-    //       }
-    //     />
-    //   </Grid>
     <Layout>
       <Grid item md={6} xs={12} className={classes.header}>
+        {user.user.roles >= 2 ? (
+          <>
+            <Button
+              variant="contained"
+              color="secondary"
+              style={{ margin: 15 }}
+              startIcon={<ListAltIcon />}
+              onClick={() => Router.push("/admin/dataView")}
+            >
+              報表清單
+            </Button>
+          </>
+        ) : null}
         <Form
           onSubmit={onSubmit}
           initialValues={{
@@ -471,27 +467,5 @@ export default function addForm(props) {
         title={title}
       />
     </Layout>
-    //   <Footer />
-
-    //   <AlterModal
-    //     handleClose={handleAlClose}
-    //     open={alOpen}
-    //     title="請將以下號碼寫在申請表上"
-    //     content={alContent}
-    //   />
-    //   <NyModal
-    //     handleClose={handleNyClose}
-    //     handleSave={handleSave}
-    //     open={nyOpen}
-    //     content={content}
-    //     title={title}
-    //   />
-    //   <TModal
-    //     handleClose={handleClose}
-    //     open={open}
-    //     content={content}
-    //     title={title}
-    //   />
-    // </Grid>
   );
 }
