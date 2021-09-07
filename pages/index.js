@@ -61,11 +61,13 @@ export default function Home() {
   const [nyOpen, setNyOpen] = useState(false);
   const [privateOpen, setPrivateOpen] = useState(false);
   const [personalOpen, setPersonalOpen] = useState(false);
+
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [checked, setChecked] = useState("none");
   const [nameCheck, setNameCheck] = useState("");
   const [buttonDisable, setButtonDisable] = useState(false);
+  const [nameDisable, setNameDisable] = useState(false);
   const [id, setID] = useState("");
   const [count, setCount] = useState("");
   const [formValues, setFormValues] = useState("");
@@ -137,7 +139,7 @@ export default function Home() {
     post(process.env.NEXT_PUBLIC_API_USER_URL, data)
       .then((data) => {
         if (data.is_same) {
-          setButtonDisable(false);
+          setNameDisable(false);
           setNameCheck(
             <>
               <CheckCircleOutlineIcon color="primary" />
@@ -145,7 +147,7 @@ export default function Home() {
             </>
           );
         } else {
-          setButtonDisable(true);
+          setNameDisable(true);
           setNameCheck(
             <>
               <CancelIcon color="error" />
@@ -585,7 +587,11 @@ export default function Home() {
                                           variant="contained"
                                           color="primary"
                                           type="submit"
-                                          disabled={submitting || buttonDisable}
+                                          disabled={
+                                            submitting ||
+                                            buttonDisable ||
+                                            nameDisable
+                                          }
                                         >
                                           送出
                                         </Button>
