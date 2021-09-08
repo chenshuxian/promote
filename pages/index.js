@@ -139,7 +139,7 @@ export default function Home() {
     post(process.env.NEXT_PUBLIC_API_USER_URL, data)
       .then((data) => {
         if (data.is_same) {
-          setNameDisable(false);
+          //setNameDisable(false);
           setNameCheck(
             <>
               <CheckCircleOutlineIcon color="primary" />
@@ -147,7 +147,7 @@ export default function Home() {
             </>
           );
         } else {
-          setNameDisable(true);
+          // setNameDisable(true);
           setNameCheck(
             <>
               <CancelIcon color="error" />
@@ -587,11 +587,7 @@ export default function Home() {
                                           variant="contained"
                                           color="primary"
                                           type="submit"
-                                          disabled={
-                                            submitting ||
-                                            buttonDisable ||
-                                            nameDisable
-                                          }
+                                          disabled={submitting || buttonDisable}
                                         >
                                           送出
                                         </Button>
