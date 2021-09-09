@@ -40,7 +40,7 @@ export default async function validate(values, bank_len, parent_gender) {
     errors.bank_account = "銀行帳號不可為空";
   } else if (
     isNaN(values.bank_account) ||
-    values.bank_account.length !== bank_len
+    values.bank_account.trim().length !== bank_len
   ) {
     errors.bank_account = `銀行帳號由${bank_len}位數字組成`;
   }
@@ -105,7 +105,7 @@ export async function adminValidate(values, bank_len, born) {
     errors.bank_account = "銀行帳號不可為空";
   } else if (
     isNaN(values.bank_account) ||
-    values.bank_account.length !== bank_len
+    values.bank_account.trim().length !== bank_len
   ) {
     errors.bank_account = `銀行帳號由${bank_len}位數字組成`;
   }
