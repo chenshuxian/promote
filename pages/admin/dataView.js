@@ -111,9 +111,9 @@ const useStyles = makeStyles(
   { defaultTheme }
 );
 
-const pass = async () => {
+const pass = async (name) => {
   //線上審核，線上申請且同名
-  let data = { api: "checkOnline" };
+  let data = { api: "checkOnline", name: name };
   postData(process.env.NEXT_PUBLIC_API_USER_URL, data)
     .then((data) => {
       //console.log(data);
@@ -365,7 +365,12 @@ export default function DataView() {
                         color="secondary"
                         style={{ margin: 15 }}
                         startIcon={<PersonAddIcon />}
-                        onClick={() => pass()}
+                        onClick={() => {
+                          let yes = window.confirm("你確認要進行線上審核嗎");
+                          if (yes) {
+                            pass(user.user.name);
+                          }
+                        }}
                       >
                         線上審核
                       </Button>

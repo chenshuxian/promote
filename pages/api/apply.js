@@ -16,6 +16,7 @@ const checkdata = async (id, house_id, born) => {
       select: {
         house_id: true,
         born: true,
+        status: true,
       },
     });
 
@@ -24,6 +25,12 @@ const checkdata = async (id, house_id, born) => {
     }
     if (user.born !== born) {
       msg.push("生日");
+    }
+    if (user.status == 2) {
+      msg.push("已審核不可進行修改");
+    }
+    if (user.status == 3) {
+      msg.push("已撥款不可進行修改");
     }
     return msg;
   } catch (err) {
@@ -34,19 +41,6 @@ const checkdata = async (id, house_id, born) => {
 export default async function handler(req, res) {
   if (req.method === "POST") {
     // 新增申請資料
-    // let ip =
-    //   req.headers["x-forwarded-for"] ||
-    //   req.ip ||
-    //   req.connection.remoteAddress ||
-    //   req.socket.remoteAddress ||
-    //   req.connection.socket.remoteAddress ||
-    //   "";
-    // if (ip.split(",").length > 0) {
-    //   ip = ip.split(",")[0];
-    // }
-    // // ipv6 取得ip
-    // ip = ip.substr(ip.lastIndexOf(":") + 1, ip.length);
-    // console.log("apply :" + ip);
     req.body.ip = GETIP(req);
 
     let title = "申請成功";

@@ -63,6 +63,8 @@ export default async function handler(req, res) {
             },
             data: {
               status: 2,
+              update_time: DATE(),
+              editor: req.body.name,
             },
           });
 
