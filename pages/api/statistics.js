@@ -56,27 +56,12 @@ const common = async (town, status, roles, sdate, edate, total = false) => {
   // console.log(and);
 
   try {
-    // const data = await prisma.apply.count({
-    //   where: {
-    //     AND: and,
-    //   },
-    // });
     const data = await await prisma.$queryRaw(`
     SELECT count(*) as total
     FROM apply ${where} 
   `);
     console.log("total:" + data[0].total);
     return data[0].total;
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const total = async (town) => {
-  try {
-    const data = await prisma.apply.count();
-    console.log("unapply:" + data);
-    return data;
   } catch (err) {
     console.log(err);
   }
