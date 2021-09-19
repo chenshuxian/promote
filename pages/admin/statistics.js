@@ -96,7 +96,7 @@ const GroupedBar = () => {
       },
 
       {
-        label: "已申請",
+        label: "申請中",
         data: applyData,
         backgroundColor: "rgb(54, 162, 235)",
       },

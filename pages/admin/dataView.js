@@ -20,6 +20,7 @@ const columns = [
   { field: "file_number", headerName: "編碼序號", width: 120 },
   { field: "id", headerName: "身分證", width: 120 },
   { field: "name", headerName: "姓名", width: 110 },
+  { field: "bank_name", headerName: "銀行戶名", width: 110 },
   {
     field: "town",
     headerName: "鄉鎮",

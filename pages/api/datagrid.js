@@ -21,7 +21,7 @@ export default withSession(async (req, res) => {
     console.log("dg where :" + where);
     try {
       const data = await prisma.$queryRaw(`
-      SELECT id,name,bank_account,bank_id,parent_id,parent_name,
+      SELECT id,name,bank_account,bank_id,parent_id,parent_name,bank_name,
       status,phone,update_time,relationship,file_number,town,status,
       editor
       FROM apply ${where} limit 10000

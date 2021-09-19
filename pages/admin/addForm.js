@@ -158,7 +158,7 @@ export default function addForm(props) {
   };
   /*
   申請處理
-  狀態由0改為2申請中
+  狀態由0改為1申請中
   */
   const handleSave = () => {
     setNyOpen(false);
@@ -241,21 +241,6 @@ export default function addForm(props) {
     setContent(content);
     setNyOpen(true);
     setFormValues(values);
-
-    // 返回序號版本
-    // postData(process.env.NEXT_PUBLIC_API_USER_URL, data)
-    //   .then((data) => {
-    //     // let content = (
-    //     //   <Typography variant="h2" color="secondary" align="center">
-    //     //     {data.bank.id}
-    //     //   </Typography>
-    //     // );
-    //     // setAlContent(content);
-    //     // setAlOpen(true);
-
-    //     console.log(data);
-    //   })
-    //   .catch((error) => console.error(error));
   };
 
   const handleClose = () => {

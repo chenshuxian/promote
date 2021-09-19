@@ -17,8 +17,6 @@ const useStyles = makeStyles((theme) => ({
   header: {
     marginTop: 90,
   },
-  appbar: { flexGrow: 1 },
-  title: { flexGrow: 1 },
 }));
 
 const logout = () => {
@@ -37,7 +35,7 @@ const Layout = ({ children }) => {
     <Grid
       container
       justifyContent="center"
-      alignItems="center"
+      alignItems="flex-end"
       component="main"
       className={classes.root}
       direction="row"
