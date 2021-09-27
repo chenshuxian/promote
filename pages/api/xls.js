@@ -188,6 +188,8 @@ const formatData = async (_listData, town, user, statist) => {
     _listData[i].sid = parseInt(1) + parseInt(i);
     _listData[i].update_time = `${y}-${m}-${d}`;
 
+    // console.log(`format : ${_listData[i].bank_id}`);
+
     if (_listData[i].bank_id === "700") {
       _listData[i].post_id = _listData[i].bank_account.substr(0, 7);
       _listData[i].post = _listData[i].bank_account.substr(7, 7);
@@ -281,7 +283,7 @@ export default withSession(async (req, res) => {
   const user = req.session.get("user");
   const sdate = req.body.sdate;
   const edate = req.body.edate;
-  console.log(req.body.sdate);
+  // console.log(req.body.sdate);
 
   if (user) {
     // in a real world application you might read the user id from the session and then do a database request
@@ -317,7 +319,7 @@ export default withSession(async (req, res) => {
 
       // 範圍
       const ref = getRange(total);
-      const reportRef = getRange(reportOutput);
+      const reportRef = await getRange(reportOutput);
       console.log("REF " + reportRef);
       reportOutput["!merges"] = [{ s: { c: 0, r: 0 }, e: { c: 12, r: 0 } }];
       reportOutput["!cols"] = [
@@ -341,7 +343,7 @@ export default withSession(async (req, res) => {
         SheetNames: ["total", "list"],
         Sheets: {
           total: {
-            "!ref": ref,
+            //  "!ref": ref,
             ...output,
           },
           list: Object.assign({}, reportOutput, { "!ref": reportRef }),
@@ -349,7 +351,7 @@ export default withSession(async (req, res) => {
       };
 
       let fileName = `${sendday}_${govEN[town]}_report.xlsx`;
-
+      // console.log("XLSX " + fileName);
       XLSX.writeFile(wb, `./report/${fileName}`);
 
       //檔案下載
