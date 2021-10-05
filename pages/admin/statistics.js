@@ -156,18 +156,18 @@ const GroupedBar = () => {
     ),
     createData(
       "申請中,未撥款",
-      applyData[0],
-      applyData[1],
-      applyData[2],
-      applyData[3],
-      applyData[4],
-      applyData[5],
-      applyData[0] +
-        applyData[1] +
-        applyData[2] +
-        applyData[3] +
-        applyData[4] +
-        applyData[5]
+      applyData[0] ? applyData[0] : 0,
+      applyData[1] ? applyData[1] : 0,
+      applyData[2] ? applyData[2] : 0,
+      applyData[3] ? applyData[3] : 0,
+      applyData[4] ? applyData[4] : 0,
+      applyData[5] ? applyData[5] : 0,
+      (applyData[0] ? applyData[0] : 0) +
+        (applyData[1] ? applyData[1] : 0) +
+        (applyData[2] ? applyData[2] : 0) +
+        (applyData[3] ? applyData[3] : 0) +
+        (applyData[4] ? applyData[4] : 0) +
+        (applyData[5] ? applyData[5] : 0)
     ),
     createData(
       "已審核,未撥款",

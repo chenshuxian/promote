@@ -253,7 +253,7 @@ export default function DataView() {
       });
     });
     console.log(filteredRows.length);
-    if (user.user.roles === 3 && filteredRows.length === 0) {
+    if (user.user.roles === 3) {
       // console.log("server search");
       let data = { id: searchValue };
       postData(process.env.NEXT_PUBLIC_API_DG_URL, data)
