@@ -214,6 +214,7 @@ export default function DataView() {
     a: 0,
     f: 0,
     p: 0,
+    fa: 0,
   });
   const { user } = useUser({ redirectTo: "/admin/login" });
 
@@ -299,6 +300,9 @@ export default function DataView() {
                   </Grid>
                   <Grid item>
                     <Typography>已審核: {statistics.f}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography>審核失敗: {statistics.fa}</Typography>
                   </Grid>
                   <Grid item>
                     <Typography>已撥款: {statistics.p}</Typography>

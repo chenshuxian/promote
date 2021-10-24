@@ -84,6 +84,7 @@ export default withSession(async (req, res) => {
       const a = await common(town, 1, roles, sdate, edate);
       const f = await common(town, 2, roles, sdate, edate);
       const p = await common(town, 3, roles, sdate, edate);
+      const fa = await common(town, 4, roles, sdate, edate);
 
       res.json({
         t,
@@ -91,6 +92,7 @@ export default withSession(async (req, res) => {
         a,
         f,
         p,
+        fa,
       });
     } catch (err) {
       console.log(err);
